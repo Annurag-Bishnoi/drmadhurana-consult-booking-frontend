@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as PatientRouteImport } from './routes/patient'
+import { Route as DoctorRouteImport } from './routes/doctor'
 import { Route as BookingSuccessRouteImport } from './routes/booking-success'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientIndexRouteImport } from './routes/patient.index'
+import { Route as DoctorIndexRouteImport } from './routes/doctor.index'
 import { Route as PatientVoiceRouteImport } from './routes/patient.voice'
 import { Route as PatientVideoRouteImport } from './routes/patient.video'
 import { Route as PatientSettingsRouteImport } from './routes/patient.settings'
@@ -23,6 +25,15 @@ import { Route as PatientProfileRouteImport } from './routes/patient.profile'
 import { Route as PatientDocumentsRouteImport } from './routes/patient.documents'
 import { Route as PatientConsultationsRouteImport } from './routes/patient.consultations'
 import { Route as PatientChatRouteImport } from './routes/patient.chat'
+import { Route as DoctorVoiceRouteImport } from './routes/doctor.voice'
+import { Route as DoctorVideoRouteImport } from './routes/doctor.video'
+import { Route as DoctorSettingsRouteImport } from './routes/doctor.settings'
+import { Route as DoctorProfileRouteImport } from './routes/doctor.profile'
+import { Route as DoctorPatientsRouteImport } from './routes/doctor.patients'
+import { Route as DoctorHistoryRouteImport } from './routes/doctor.history'
+import { Route as DoctorEarningsRouteImport } from './routes/doctor.earnings'
+import { Route as DoctorChatRouteImport } from './routes/doctor.chat'
+import { Route as DoctorAppointmentsRouteImport } from './routes/doctor.appointments'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -32,6 +43,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const PatientRoute = PatientRouteImport.update({
   id: '/patient',
   path: '/patient',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoctorRoute = DoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookingSuccessRoute = BookingSuccessRouteImport.update({
@@ -58,6 +74,11 @@ const PatientIndexRoute = PatientIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PatientRoute,
+} as any)
+const DoctorIndexRoute = DoctorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DoctorRoute,
 } as any)
 const PatientVoiceRoute = PatientVoiceRouteImport.update({
   id: '/voice',
@@ -94,14 +115,69 @@ const PatientChatRoute = PatientChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => PatientRoute,
 } as any)
+const DoctorVoiceRoute = DoctorVoiceRouteImport.update({
+  id: '/voice',
+  path: '/voice',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorVideoRoute = DoctorVideoRouteImport.update({
+  id: '/video',
+  path: '/video',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorSettingsRoute = DoctorSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorProfileRoute = DoctorProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorPatientsRoute = DoctorPatientsRouteImport.update({
+  id: '/patients',
+  path: '/patients',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorHistoryRoute = DoctorHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorEarningsRoute = DoctorEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorChatRoute = DoctorChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorAppointmentsRoute = DoctorAppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => DoctorRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/booking-success': typeof BookingSuccessRoute
+  '/doctor': typeof DoctorRouteWithChildren
   '/patient': typeof PatientRouteWithChildren
   '/services': typeof ServicesRoute
+  '/doctor/appointments': typeof DoctorAppointmentsRoute
+  '/doctor/chat': typeof DoctorChatRoute
+  '/doctor/earnings': typeof DoctorEarningsRoute
+  '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/patients': typeof DoctorPatientsRoute
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/doctor/settings': typeof DoctorSettingsRoute
+  '/doctor/video': typeof DoctorVideoRoute
+  '/doctor/voice': typeof DoctorVoiceRoute
   '/patient/chat': typeof PatientChatRoute
   '/patient/consultations': typeof PatientConsultationsRoute
   '/patient/documents': typeof PatientDocumentsRoute
@@ -109,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/patient/settings': typeof PatientSettingsRoute
   '/patient/video': typeof PatientVideoRoute
   '/patient/voice': typeof PatientVoiceRoute
+  '/doctor/': typeof DoctorIndexRoute
   '/patient/': typeof PatientIndexRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +194,15 @@ export interface FileRoutesByTo {
   '/book': typeof BookRoute
   '/booking-success': typeof BookingSuccessRoute
   '/services': typeof ServicesRoute
+  '/doctor/appointments': typeof DoctorAppointmentsRoute
+  '/doctor/chat': typeof DoctorChatRoute
+  '/doctor/earnings': typeof DoctorEarningsRoute
+  '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/patients': typeof DoctorPatientsRoute
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/doctor/settings': typeof DoctorSettingsRoute
+  '/doctor/video': typeof DoctorVideoRoute
+  '/doctor/voice': typeof DoctorVoiceRoute
   '/patient/chat': typeof PatientChatRoute
   '/patient/consultations': typeof PatientConsultationsRoute
   '/patient/documents': typeof PatientDocumentsRoute
@@ -124,6 +210,7 @@ export interface FileRoutesByTo {
   '/patient/settings': typeof PatientSettingsRoute
   '/patient/video': typeof PatientVideoRoute
   '/patient/voice': typeof PatientVoiceRoute
+  '/doctor': typeof DoctorIndexRoute
   '/patient': typeof PatientIndexRoute
 }
 export interface FileRoutesById {
@@ -132,8 +219,18 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/booking-success': typeof BookingSuccessRoute
+  '/doctor': typeof DoctorRouteWithChildren
   '/patient': typeof PatientRouteWithChildren
   '/services': typeof ServicesRoute
+  '/doctor/appointments': typeof DoctorAppointmentsRoute
+  '/doctor/chat': typeof DoctorChatRoute
+  '/doctor/earnings': typeof DoctorEarningsRoute
+  '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/patients': typeof DoctorPatientsRoute
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/doctor/settings': typeof DoctorSettingsRoute
+  '/doctor/video': typeof DoctorVideoRoute
+  '/doctor/voice': typeof DoctorVoiceRoute
   '/patient/chat': typeof PatientChatRoute
   '/patient/consultations': typeof PatientConsultationsRoute
   '/patient/documents': typeof PatientDocumentsRoute
@@ -141,6 +238,7 @@ export interface FileRoutesById {
   '/patient/settings': typeof PatientSettingsRoute
   '/patient/video': typeof PatientVideoRoute
   '/patient/voice': typeof PatientVoiceRoute
+  '/doctor/': typeof DoctorIndexRoute
   '/patient/': typeof PatientIndexRoute
 }
 export interface FileRouteTypes {
@@ -150,8 +248,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/booking-success'
+    | '/doctor'
     | '/patient'
     | '/services'
+    | '/doctor/appointments'
+    | '/doctor/chat'
+    | '/doctor/earnings'
+    | '/doctor/history'
+    | '/doctor/patients'
+    | '/doctor/profile'
+    | '/doctor/settings'
+    | '/doctor/video'
+    | '/doctor/voice'
     | '/patient/chat'
     | '/patient/consultations'
     | '/patient/documents'
@@ -159,6 +267,7 @@ export interface FileRouteTypes {
     | '/patient/settings'
     | '/patient/video'
     | '/patient/voice'
+    | '/doctor/'
     | '/patient/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -167,6 +276,15 @@ export interface FileRouteTypes {
     | '/book'
     | '/booking-success'
     | '/services'
+    | '/doctor/appointments'
+    | '/doctor/chat'
+    | '/doctor/earnings'
+    | '/doctor/history'
+    | '/doctor/patients'
+    | '/doctor/profile'
+    | '/doctor/settings'
+    | '/doctor/video'
+    | '/doctor/voice'
     | '/patient/chat'
     | '/patient/consultations'
     | '/patient/documents'
@@ -174,6 +292,7 @@ export interface FileRouteTypes {
     | '/patient/settings'
     | '/patient/video'
     | '/patient/voice'
+    | '/doctor'
     | '/patient'
   id:
     | '__root__'
@@ -181,8 +300,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/booking-success'
+    | '/doctor'
     | '/patient'
     | '/services'
+    | '/doctor/appointments'
+    | '/doctor/chat'
+    | '/doctor/earnings'
+    | '/doctor/history'
+    | '/doctor/patients'
+    | '/doctor/profile'
+    | '/doctor/settings'
+    | '/doctor/video'
+    | '/doctor/voice'
     | '/patient/chat'
     | '/patient/consultations'
     | '/patient/documents'
@@ -190,6 +319,7 @@ export interface FileRouteTypes {
     | '/patient/settings'
     | '/patient/video'
     | '/patient/voice'
+    | '/doctor/'
     | '/patient/'
   fileRoutesById: FileRoutesById
 }
@@ -198,6 +328,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BookRoute: typeof BookRoute
   BookingSuccessRoute: typeof BookingSuccessRoute
+  DoctorRoute: typeof DoctorRouteWithChildren
   PatientRoute: typeof PatientRouteWithChildren
   ServicesRoute: typeof ServicesRoute
 }
@@ -216,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/patient'
       fullPath: '/patient'
       preLoaderRoute: typeof PatientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctor': {
+      id: '/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof DoctorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/booking-success': {
@@ -252,6 +390,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/patient/'
       preLoaderRoute: typeof PatientIndexRouteImport
       parentRoute: typeof PatientRoute
+    }
+    '/doctor/': {
+      id: '/doctor/'
+      path: '/'
+      fullPath: '/doctor/'
+      preLoaderRoute: typeof DoctorIndexRouteImport
+      parentRoute: typeof DoctorRoute
     }
     '/patient/voice': {
       id: '/patient/voice'
@@ -302,8 +447,100 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientChatRouteImport
       parentRoute: typeof PatientRoute
     }
+    '/doctor/voice': {
+      id: '/doctor/voice'
+      path: '/voice'
+      fullPath: '/doctor/voice'
+      preLoaderRoute: typeof DoctorVoiceRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/video': {
+      id: '/doctor/video'
+      path: '/video'
+      fullPath: '/doctor/video'
+      preLoaderRoute: typeof DoctorVideoRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/settings': {
+      id: '/doctor/settings'
+      path: '/settings'
+      fullPath: '/doctor/settings'
+      preLoaderRoute: typeof DoctorSettingsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/profile': {
+      id: '/doctor/profile'
+      path: '/profile'
+      fullPath: '/doctor/profile'
+      preLoaderRoute: typeof DoctorProfileRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/patients': {
+      id: '/doctor/patients'
+      path: '/patients'
+      fullPath: '/doctor/patients'
+      preLoaderRoute: typeof DoctorPatientsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/history': {
+      id: '/doctor/history'
+      path: '/history'
+      fullPath: '/doctor/history'
+      preLoaderRoute: typeof DoctorHistoryRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/earnings': {
+      id: '/doctor/earnings'
+      path: '/earnings'
+      fullPath: '/doctor/earnings'
+      preLoaderRoute: typeof DoctorEarningsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/chat': {
+      id: '/doctor/chat'
+      path: '/chat'
+      fullPath: '/doctor/chat'
+      preLoaderRoute: typeof DoctorChatRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/appointments': {
+      id: '/doctor/appointments'
+      path: '/appointments'
+      fullPath: '/doctor/appointments'
+      preLoaderRoute: typeof DoctorAppointmentsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
   }
 }
+
+interface DoctorRouteChildren {
+  DoctorAppointmentsRoute: typeof DoctorAppointmentsRoute
+  DoctorChatRoute: typeof DoctorChatRoute
+  DoctorEarningsRoute: typeof DoctorEarningsRoute
+  DoctorHistoryRoute: typeof DoctorHistoryRoute
+  DoctorPatientsRoute: typeof DoctorPatientsRoute
+  DoctorProfileRoute: typeof DoctorProfileRoute
+  DoctorSettingsRoute: typeof DoctorSettingsRoute
+  DoctorVideoRoute: typeof DoctorVideoRoute
+  DoctorVoiceRoute: typeof DoctorVoiceRoute
+  DoctorIndexRoute: typeof DoctorIndexRoute
+}
+
+const DoctorRouteChildren: DoctorRouteChildren = {
+  DoctorAppointmentsRoute: DoctorAppointmentsRoute,
+  DoctorChatRoute: DoctorChatRoute,
+  DoctorEarningsRoute: DoctorEarningsRoute,
+  DoctorHistoryRoute: DoctorHistoryRoute,
+  DoctorPatientsRoute: DoctorPatientsRoute,
+  DoctorProfileRoute: DoctorProfileRoute,
+  DoctorSettingsRoute: DoctorSettingsRoute,
+  DoctorVideoRoute: DoctorVideoRoute,
+  DoctorVoiceRoute: DoctorVoiceRoute,
+  DoctorIndexRoute: DoctorIndexRoute,
+}
+
+const DoctorRouteWithChildren =
+  DoctorRoute._addFileChildren(DoctorRouteChildren)
 
 interface PatientRouteChildren {
   PatientChatRoute: typeof PatientChatRoute
@@ -335,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BookRoute: BookRoute,
   BookingSuccessRoute: BookingSuccessRoute,
+  DoctorRoute: DoctorRouteWithChildren,
   PatientRoute: PatientRouteWithChildren,
   ServicesRoute: ServicesRoute,
 }
