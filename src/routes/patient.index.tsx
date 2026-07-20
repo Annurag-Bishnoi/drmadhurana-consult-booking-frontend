@@ -2,9 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PatientShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { appointments, doctor, consultationTypeLabel } from "@/data/mock";
+import { doctor, consultationTypeLabel } from "@/data/mock";
 import { StatusBadge, TypeBadge } from "@/components/site/StatusBadge";
 import { CalendarDays, MessageSquare, Video, Activity, ArrowRight } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/patient/")({
   head: () => ({ meta: [{ title: "Patient Dashboard" }, { name: "robots", content: "noindex" }] }),
@@ -12,12 +14,26 @@ export const Route = createFileRoute("/patient/")({
 });
 
 function Overview() {
-  const mine = appointments.filter((a) => a.patientId === "P-1001");
+  const { user, getToken } = useAuth();
+  const [mine, setMine] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/appointments/me", {
+      headers: { "Authorization": `Bearer ${getToken()}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.sort((a: any, b: any) => b.id - a.id);
+        setMine(sorted);
+      })
+      .catch(() => {});
+  }, [getToken]);
+
   const upcoming = mine.find((a) => a.status === "upcoming" || a.status === "in-progress");
   return (
     <PatientShell title="Overview">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold">Good morning, Rahul</h2>
+        <h2 className="text-2xl font-semibold">Good morning, {user?.name?.split(" ")[0] || "there"}</h2>
         <p className="text-sm text-muted-foreground">Here's what's happening with your care today.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

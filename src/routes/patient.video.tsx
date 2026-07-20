@@ -1,71 +1,144 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PatientShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { doctor } from "@/data/mock";
-import { Mic, Video as VideoIcon, MonitorUp, MessageSquare, PhoneOff, Circle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { DailyMeetingComponent } from "@/components/DailyMeetingComponent";
+import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect } from "react";
+import { FileText } from "lucide-react";
 
 export const Route = createFileRoute("/patient/video")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    id: search.id as string | undefined,
+    url: search.url as string | undefined,
+  }),
   head: () => ({ meta: [{ title: "Video Consultation" }, { name: "robots", content: "noindex" }] }),
   component: VideoPage,
 });
 
 function VideoPage() {
-  const [s, setS] = useState(312);
-  useEffect(() => { const i = setInterval(() => setS((x) => x + 1), 1000); return () => clearInterval(i); }, []);
-  const mm = String(Math.floor(s / 60)).padStart(2, "0"); const ss = String(s % 60).padStart(2, "0");
+  const { id, url } = Route.useSearch();
+  const navigate = useNavigate();
+  const { getToken } = useAuth();
+  const [history, setHistory] = useState<any[]>([]);
+  const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/appointments/me", {
+          headers: { "Authorization": `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setHistory(data.filter((a: any) => a.type === "video" && a.status === "completed"));
+        }
+      } catch (e) {}
+    };
+    fetchHistory();
+  }, [getToken]);
+
+  const handleEndCall = () => {
+    toast.success("Left the consultation");
+    navigate({ to: "/patient/consultations" });
+  };
+
+  if (!id || !url) {
+    return (
+      <PatientShell title="Video consultation">
+        <div className="mb-6 rounded-lg border border-border/60 bg-card p-8 text-center text-muted-foreground shadow-sm">
+          No active consultation selected.
+        </div>
+        <HistorySection history={history} onViewPrescription={setSelectedPrescription} />
+        <PrescriptionDialog selected={selectedPrescription} onClose={() => setSelectedPrescription(null)} />
+      </PatientShell>
+    );
+  }
+
   return (
-    <PatientShell title="Video consultation">
-      <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-        <div className="space-y-4">
-          <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-slate-900 to-slate-800 shadow-lg">
-            <img src={doctor.image} alt={doctor.name} className="aspect-video w-full object-cover opacity-95" />
-            <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs text-white backdrop-blur">
-              <Circle className="h-2 w-2 fill-red-500 text-red-500" /> LIVE · {mm}:{ss}
-            </div>
-            <div className="absolute bottom-4 left-4 rounded-md bg-black/40 px-3 py-1 text-xs text-white backdrop-blur">{doctor.name}</div>
-            <div className="absolute bottom-4 right-4 h-28 w-40 overflow-hidden rounded-lg border border-white/30 bg-slate-700 text-center text-xs text-white/80">
-              <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900">You</div>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-3">
-            <IconBtn icon={Mic} />
-            <IconBtn icon={VideoIcon} />
-            <IconBtn icon={MonitorUp} />
-            <IconBtn icon={MessageSquare} />
-            <Button variant="destructive" className="h-12 rounded-full px-6"><PhoneOff className="mr-2 h-5 w-5" /> End call</Button>
-          </div>
+    <PatientShell title={`Video consultation — ${id}`}>
+      <div className="grid h-[80vh] gap-6 lg:grid-cols-[2fr_1fr]">
+        <div className="flex flex-col">
+          <DailyMeetingComponent 
+            url={url} 
+            onReadyToClose={handleEndCall}
+          />
         </div>
         <div className="space-y-4">
           <Card className="border-border/60">
             <CardContent className="p-5">
               <h3 className="text-sm font-semibold">Consultation info</h3>
               <div className="mt-3 space-y-2 text-sm">
-                <Row k="Patient" v="Rahul Sharma" />
-                <Row k="Age" v="34" />
-                <Row k="Reason" v="Gallbladder review" />
-                <Row k="Appointment" v="11:30 AM" />
+                <Row k="ID" v={id} />
+                <Row k="Type" v="Video" />
                 <Row k="Status" v="In progress" />
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/60">
+          <Card className="flex-1 border-border/60">
             <CardContent className="p-5">
               <h3 className="text-sm font-semibold">Your notes</h3>
-              <Textarea rows={5} className="mt-3" placeholder="Jot down questions to ask the doctor..." />
-              <Button variant="outline" size="sm" className="mt-3 w-full">Save notes</Button>
+              <Textarea rows={8} className="mt-3" placeholder="Jot down questions to ask the doctor..." />
+              <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => toast.success("Notes saved")}>Save notes</Button>
             </CardContent>
           </Card>
         </div>
       </div>
+      
+      <div className="mt-8">
+        <HistorySection history={history} onViewPrescription={setSelectedPrescription} />
+      </div>
+      <PrescriptionDialog selected={selectedPrescription} onClose={() => setSelectedPrescription(null)} />
     </PatientShell>
   );
 }
-function IconBtn({ icon: Icon }: { icon: React.ComponentType<{ className?: string }> }) {
-  return <Button variant="outline" className="h-12 w-12 rounded-full p-0"><Icon className="h-5 w-5" /></Button>;
+
+function HistorySection({ history, onViewPrescription }: { history: any[], onViewPrescription: (a: any) => void }) {
+  if (history.length === 0) return null;
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Call History</h3>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {history.map((a) => (
+          <Card key={a.id} className="border-border/60">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-medium">CONS-{a.id}</div>
+                  <div className="text-sm text-muted-foreground">{a.date} at {a.time}</div>
+                </div>
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs text-primary">Completed</span>
+              </div>
+              <div className="text-sm text-muted-foreground truncate">{a.reason}</div>
+              <Button variant="outline" className="w-full" size="sm" onClick={() => onViewPrescription(a)}>
+                <FileText className="mr-2 h-4 w-4" /> View Prescription
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+function PrescriptionDialog({ selected, onClose }: { selected: any, onClose: () => void }) {
+  return (
+    <Dialog open={!!selected} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Prescription - CONS-{selected?.id}</DialogTitle>
+        </DialogHeader>
+        <div className="mt-4 rounded-md bg-muted/50 p-4 font-mono text-sm whitespace-pre-wrap min-h-[200px]">
+          {selected?.prescription || "No prescription was provided for this consultation."}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function Row({ k, v }: { k: string; v: string }) {
   return <div className="flex justify-between"><span className="text-muted-foreground">{k}</span><span className="font-medium">{v}</span></div>;
 }

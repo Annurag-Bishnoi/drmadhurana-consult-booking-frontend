@@ -1,14 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DoctorShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
-import { appointments } from "@/data/mock";
 import { StatusBadge, TypeBadge } from "@/components/site/StatusBadge";
+import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export const Route = createFileRoute("/doctor/history")({
   head: () => ({ meta: [{ title: "Consultation History" }, { name: "robots", content: "noindex" }] }),
   component: History,
 });
 function History() {
+  const { getToken } = useAuth();
+  const [appointments, setAppointments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/appointments/all", {
+      headers: { "Authorization": `Bearer ${getToken()}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.sort((a: any, b: any) => b.id - a.id);
+        setAppointments(sorted);
+      })
+      .catch(() => {});
+  }, [getToken]);
+
   const rows = appointments.filter((a) => a.status === "completed" || a.status === "cancelled");
   return (
     <DoctorShell title="Consultation history">

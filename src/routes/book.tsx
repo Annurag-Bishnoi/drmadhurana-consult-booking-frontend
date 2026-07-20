@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PublicHeader } from "@/components/site/PublicHeader";
 import { PublicFooter } from "@/components/site/PublicFooter";
-import { useState } from "react";
-import { consultationOptions, timeSlots, doctor, type ConsultationType, consultationTypeLabel } from "@/data/mock";
+import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { consultationOptions, doctor, type ConsultationType, consultationTypeLabel } from "@/data/mock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Phone, Video, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -29,30 +31,140 @@ export const Route = createFileRoute("/book")({
 function Book() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const { user, isLoading, getToken } = useAuth();
   const [step, setStep] = useState(1);
   const [type, setType] = useState<ConsultationType>(search.type ?? "video");
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [time, setTime] = useState<string>(timeSlots[2]);
+  const [time, setTime] = useState<string>("");
+  const [currency, setCurrency] = useState<"INR" | "USD" | "GBP">("INR");
+  const [region, setRegion] = useState<"India" | "Outside India">("India");
+  const [duration, setDuration] = useState<number>(15);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", age: "", gender: "", reason: "", notes: "",
   });
 
+  // Auto-detect region via IP
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then(r => r.json())
+      .then(data => {
+        if (data.country_code !== "IN") {
+          setRegion("Outside India");
+          setCurrency("USD");
+        } else {
+          setRegion("India");
+          setCurrency("INR");
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleCurrencyChange = (c: "INR" | "USD" | "GBP") => {
+    setCurrency(c);
+    setRegion(c === "INR" ? "India" : "Outside India");
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/settings/slots")
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setAvailableTimeSlots(data);
+          setTime(data[0]);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isLoading && !user) {
+      toast.error("Please login before booking a consultation");
+      navigate({ to: "/login", search: { redirect: "/book" } });
+    }
+  }, [user, isLoading, navigate]);
+
+  // Pre-fill form from Google account details
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || user.name || "",
+        email: prev.email || user.email || "",
+      }));
+    }
+  }, [user]);
+
   const opt = consultationOptions[type];
+  const isVideoOrVoice = type === "video" || type === "voice";
+  const actualDuration = isVideoOrVoice ? duration : 15;
+  const isIndia = region === "India";
+  
+  // Calculate Internal INR Base Fee
+  const baseFee = isIndia
+    ? (type === "video" ? 1000 : 500)
+    : (type === "video" ? 2000 : 1000);
+    
+  // Calculate Internal INR Extra Fee
+  const extraBlocks = Math.max(0, (actualDuration - 15) / 5);
+  const extraFeePerBlock = isIndia ? 100 : 200;
+  
+  const inrFee = baseFee + (extraBlocks * extraFeePerBlock);
+  
+  // Display Fee calculation
+  const finalFee = currency === "USD" ? Math.round(inrFee / 83) : currency === "GBP" ? Math.round(inrFee / 105) : inrFee;
+  const symbol = currency === "USD" ? "$" : currency === "GBP" ? "£" : "₹";
+  
+  const getCardPrice = (cardId: string) => {
+    const isSelected = type === cardId;
+    const dur = isSelected ? actualDuration : 15; 
+    const cBase = isIndia ? (cardId === "video" ? 1000 : 500) : (cardId === "video" ? 2000 : 1000);
+    const cExtraBlocks = Math.max(0, (dur - 15) / 5);
+    const cExtraFeePerBlock = isIndia ? 100 : 200;
+    const cInr = cBase + (cExtraBlocks * cExtraFeePerBlock);
+    return currency === "USD" ? Math.round(cInr / 83) : currency === "GBP" ? Math.round(cInr / 105) : cInr;
+  };
+  
   const icons = { chat: MessageSquare, voice: Phone, video: Video } as const;
 
   const next = () => setStep((s) => Math.min(4, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
-  const confirm = () => {
-    const id = `CONS-${Math.floor(2000 + Math.random() * 8000)}`;
-    toast.success("Consultation booked successfully");
-    navigate({
-      to: "/booking-success",
-      search: {
-        id, type, date: date ? format(date, "yyyy-MM-dd") : "", time,
-        name: form.name || "Patient", fee: opt.fee,
-      },
-    });
+  const confirm = async () => {
+    try {
+      const token = getToken();
+      const res = await fetch("http://localhost:8080/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: type,
+          date: date ? format(date, "yyyy-MM-dd") : "",
+          time: time,
+          reason: form.reason || "General Consultation",
+          fee: inrFee, // send backend internal fee (though it will recalculate)
+          duration: actualDuration,
+          currency: currency,
+          region: region
+        })
+      });
+      if (!res.ok) throw new Error("Failed to book appointment");
+      const data = await res.json();
+      
+      toast.success("Consultation booked successfully");
+      navigate({
+        to: "/booking-success",
+        search: {
+          id: `CONS-${data.id}`, type, date: data.date, time: data.time,
+          name: form.name || "Patient", fee: finalFee, currency
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to book appointment. Please try again.");
+    }
   };
 
   const canNext = () => {
@@ -76,7 +188,16 @@ function Book() {
           <CardContent className="p-6 sm:p-8">
             {step === 1 && (
               <div>
-                <h2 className="text-lg font-semibold">Select consultation type</h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+                  <h2 className="text-lg font-semibold">Select consultation type</h2>
+                  
+                  <div className="flex items-center gap-2 text-sm border rounded-lg px-2 py-1 bg-muted/20">
+                    <Label className="text-xs text-muted-foreground mr-1">Currency:</Label>
+                    <button onClick={() => handleCurrencyChange("INR")} className={cn("text-xs px-2 py-1 rounded transition-colors", currency === "INR" ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted text-muted-foreground")}>₹</button>
+                    <button onClick={() => handleCurrencyChange("USD")} className={cn("text-xs px-2 py-1 rounded transition-colors", currency === "USD" ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted text-muted-foreground")}>$</button>
+                    <button onClick={() => handleCurrencyChange("GBP")} className={cn("text-xs px-2 py-1 rounded transition-colors", currency === "GBP" ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted text-muted-foreground")}>£</button>
+                  </div>
+                </div>
                 <div className="mt-6 grid gap-4 md:grid-cols-3">
                   {(Object.values(consultationOptions)).map((o) => {
                     const Icon = icons[o.id];
@@ -99,13 +220,38 @@ function Book() {
                         <div className="mt-4 text-base font-semibold">{o.title}</div>
                         <div className="text-xs text-muted-foreground">{o.description}</div>
                         <div className="mt-4 flex items-center justify-between">
-                          <div className="text-lg font-semibold">₹{o.fee}</div>
-                          <Badge variant="outline">{o.duration}</Badge>
+                          <div className="text-lg font-semibold">
+                            {symbol}{getCardPrice(o.id)}
+                            {active && actualDuration > 15 ? (
+                              <span className="text-xs font-normal text-muted-foreground"> / {actualDuration}m</span>
+                            ) : (
+                              <span className="text-xs font-normal text-muted-foreground"> / 15m</span>
+                            )}
+                          </div>
                         </div>
                       </button>
                     );
                   })}
                 </div>
+                {isVideoOrVoice && (
+                  <div className="mt-8 rounded-xl border border-border/60 bg-muted/20 p-5">
+                    <h3 className="text-sm font-semibold mb-3">Select duration</h3>
+                    <div className="flex flex-wrap gap-3">
+                      {[15, 20, 25, 30].map(mins => (
+                        <button
+                          key={mins}
+                          onClick={() => setDuration(mins)}
+                          className={cn(
+                            "rounded-lg border px-4 py-2 text-sm font-medium transition-all",
+                            duration === mins ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/40 bg-background"
+                          )}
+                        >
+                          {mins} minutes
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -126,7 +272,7 @@ function Book() {
                     <div className="text-sm font-medium">Available slots</div>
                     <div className="text-xs text-muted-foreground">{date ? format(date, "EEEE, d MMM yyyy") : "Pick a date"}</div>
                     <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {timeSlots.map((t) => (
+                      {availableTimeSlots.map((t) => (
                         <button
                           key={t}
                           onClick={() => setTime(t)}
@@ -181,7 +327,7 @@ function Book() {
                     <Row k="Consultation" v={consultationTypeLabel(type)} />
                     <Row k="Date" v={date ? format(date, "EEE, d MMM yyyy") : "—"} />
                     <Row k="Time" v={time} />
-                    <Row k="Duration" v={opt.duration} />
+                    <Row k="Duration" v={`${actualDuration} minutes`} />
                     <div className="border-t border-border/60 pt-3">
                       <Row k="Patient" v={form.name} />
                       <Row k="Contact" v={`${form.phone} · ${form.email}`} />
@@ -190,7 +336,7 @@ function Book() {
                   </div>
                   <div className="rounded-xl border border-border/60 bg-card p-5">
                     <div className="text-sm text-muted-foreground">Total payable</div>
-                    <div className="mt-1 text-3xl font-semibold">₹{opt.fee}</div>
+                    <div className="mt-1 text-3xl font-semibold">{symbol}{finalFee}</div>
                     <div className="mt-4 text-xs text-muted-foreground">Payment will be collected on confirmation. This is a prototype — no charge will be made.</div>
                     <Button className="mt-5 w-full" size="lg" onClick={confirm}>Confirm consultation</Button>
                   </div>

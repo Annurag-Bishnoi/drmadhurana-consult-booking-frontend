@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DoctorShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { patients, appointments } from "@/data/mock";
 import { TypeBadge } from "@/components/site/StatusBadge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export const Route = createFileRoute("/doctor/patients")({
   head: () => ({ meta: [{ title: "Patients" }, { name: "robots", content: "noindex" }] }),
@@ -15,11 +15,34 @@ export const Route = createFileRoute("/doctor/patients")({
 });
 
 function DoctorPatients() {
+  const { getToken } = useAuth();
+  const [patients, setPatients] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [open, setOpen] = useState<string | null>(null);
   const [q, setQ] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/patients", {
+      headers: { "Authorization": `Bearer ${getToken()}` }
+    })
+      .then(res => res.json())
+      .then(setPatients)
+      .catch(() => {});
+
+    fetch("http://localhost:8080/api/appointments/all", {
+      headers: { "Authorization": `Bearer ${getToken()}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.sort((a: any, b: any) => b.id - a.id);
+        setAppointments(sorted);
+      })
+      .catch(() => {});
+  }, [getToken]);
+
   const list = patients.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()));
-  const selected = patients.find((p) => p.id === open);
-  const selectedHistory = selected ? appointments.filter((a) => a.patientId === selected.id) : [];
+  const selected = patients.find((p) => String(p.id) === open);
+  const selectedHistory = selected ? appointments.filter((a) => String(a.patientId) === String(selected.id)) : [];
   return (
     <DoctorShell title="Patients">
       <Card className="border-border/60"><CardContent className="p-6">
@@ -54,7 +77,7 @@ function DoctorPatients() {
                   <td className="px-4 py-3">{p.lastVisit}</td>
                   <td className="px-4 py-3"><TypeBadge type={p.lastType} /></td>
                   <td className="px-4 py-3">{p.status}</td>
-                  <td className="px-4 py-3 text-right"><Button size="sm" variant="outline" onClick={() => setOpen(p.id)}>View</Button></td>
+                  <td className="px-4 py-3 text-right"><Button size="sm" variant="outline" onClick={() => setOpen(String(p.id))}>View</Button></td>
                 </tr>
               ))}
             </tbody>
@@ -63,7 +86,7 @@ function DoctorPatients() {
       </CardContent></Card>
 
       <Dialog open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{selected?.name}</DialogTitle></DialogHeader>
           {selected && (
             <div className="grid gap-4 sm:grid-cols-2">

@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { DoctorShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
-import { appointments, earnings, patients, consultationTypeLabel } from "@/data/mock";
+import { earnings, patients, consultationTypeLabel } from "@/data/mock";
 import { StatusBadge, TypeBadge } from "@/components/site/StatusBadge";
 import { CalendarDays, Users, IndianRupee, Activity, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/doctor/")({
   head: () => ({ meta: [{ title: "Doctor Dashboard" }, { name: "robots", content: "noindex" }] }),
@@ -12,12 +14,27 @@ export const Route = createFileRoute("/doctor/")({
 });
 
 function DoctorOverview() {
-  const today = appointments.filter((a) => a.date === "2026-07-18");
+  const { user, getToken } = useAuth();
+  const [appointments, setAppointments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/appointments/all", {
+      headers: { "Authorization": `Bearer ${getToken()}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.sort((a: any, b: any) => b.id - a.id);
+        setAppointments(sorted);
+      })
+      .catch(() => {});
+  }, [getToken]);
+
+  const today = appointments.filter((a) => a.date === new Date().toISOString().split('T')[0] || a.date === "2026-07-18"); // fallback to today or mock date if needed
   const upcoming = appointments.filter((a) => a.status === "upcoming").length;
   return (
     <DoctorShell title="Overview">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold">Welcome back, Dr. Singh</h2>
+        <h2 className="text-2xl font-semibold">Welcome back, {user?.name || "Dr. Singh"}</h2>
         <p className="text-sm text-muted-foreground">You have {today.length} consultations scheduled today.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
