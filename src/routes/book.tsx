@@ -66,7 +66,7 @@ function Book() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/settings/slots")
+    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots")
       .then(r => r.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -134,7 +134,7 @@ function Book() {
   const confirm = async () => {
     try {
       const token = getToken();
-      const res = await fetch("http://localhost:8080/api/appointments", {
+      const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

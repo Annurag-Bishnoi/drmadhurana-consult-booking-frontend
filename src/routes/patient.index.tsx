@@ -18,7 +18,7 @@ function Overview() {
   const [mine, setMine] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/appointments/me", {
+    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())

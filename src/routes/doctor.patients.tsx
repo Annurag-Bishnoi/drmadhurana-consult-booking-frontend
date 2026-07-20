@@ -22,14 +22,14 @@ function DoctorPatients() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/patients", {
+    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/patients", {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())
       .then(setPatients)
       .catch(() => {});
 
-    fetch("http://localhost:8080/api/appointments/all", {
+    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all", {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())

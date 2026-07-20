@@ -28,7 +28,7 @@ function MyConsultations() {
     const fetchAppointments = async () => {
       try {
         const token = getToken();
-        const res = await fetch("http://localhost:8080/api/appointments/me", {
+        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
           headers: {
             "Authorization": `Bearer ${token}`
           }

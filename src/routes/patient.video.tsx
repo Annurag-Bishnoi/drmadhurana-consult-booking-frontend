@@ -29,7 +29,7 @@ function VideoPage() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/appointments/me", {
+        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok) {

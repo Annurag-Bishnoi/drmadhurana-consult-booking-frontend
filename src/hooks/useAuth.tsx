@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 
-const API_BASE = "http://localhost:8080";
+const API_BASE = "https://drmadhurana-consult-booking-backend-production.up.railway.app";
 
 export type UserRole = "patient" | "doctor" | null;
 

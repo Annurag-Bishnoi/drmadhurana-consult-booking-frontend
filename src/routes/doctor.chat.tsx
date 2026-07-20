@@ -44,7 +44,7 @@ function DoctorChat() {
     let isMounted = true;
     const fetchAppointments = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/appointments/all", {
+        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all", {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -73,7 +73,7 @@ function DoctorChat() {
     
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/${realId}`, {
+        const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -97,7 +97,7 @@ function DoctorChat() {
     if (!text.trim() || !activeId) return;
     const realId = activeId.replace("CONS-", "");
     try {
-      const res = await fetch(`http://localhost:8080/api/chat/${realId}`, {
+      const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${getToken()}`,
@@ -131,7 +131,7 @@ function DoctorChat() {
           // Note: Doctor is sending a document to chat, we don't need to save it to MedicalDocument table for the patient unless requested, but we can reuse the same endpoint if we want, or just send it directly to chat as base64.
           // Let's just send it to chat as base64 directly so the patient can see it.
           const realId = activeId.replace("CONS-", "");
-          const res = await fetch(`http://localhost:8080/api/chat/${realId}`, {
+          const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
             method: "POST",
             headers: {
               "Authorization": `Bearer ${getToken()}`,
@@ -272,7 +272,7 @@ function DoctorChat() {
                 if(!activeId) return;
                 const realId = activeId.replace("CONS-", "");
                 try {
-                  const url = activeTab === "notes" ? `http://localhost:8080/api/appointments/${realId}/notes` : `http://localhost:8080/api/appointments/${realId}/prescription`;
+                  const url = activeTab === "notes" ? `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/notes` : `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/prescription`;
                   const body = activeTab === "notes" ? { notes } : { prescription };
                   const res = await fetch(url, {
                     method: "PUT",
@@ -287,7 +287,7 @@ function DoctorChat() {
                 <Button size="sm" className="flex-1" onClick={async () => {
                    if(!activeId) return;
                    const realId = activeId.replace("CONS-", "");
-                   await fetch(`http://localhost:8080/api/appointments/${realId}/status?status=completed`, {
+                   await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/status?status=completed`, {
                       method: "PUT",
                       headers: { "Authorization": `Bearer ${getToken()}` }
                    });

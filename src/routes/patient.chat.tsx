@@ -38,7 +38,7 @@ function ChatPage() {
     let isMounted = true;
     const fetchAppointments = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/appointments/me", {
+        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -64,7 +64,7 @@ function ChatPage() {
     
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/${realId}`, {
+        const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -88,7 +88,7 @@ function ChatPage() {
     if (!text.trim() || !activeId) return;
     const realId = activeId.replace("CONS-", "");
     try {
-      const res = await fetch(`http://localhost:8080/api/chat/${realId}`, {
+      const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${getToken()}`,
@@ -123,7 +123,7 @@ function ChatPage() {
             ? (file.size / (1024 * 1024)).toFixed(1) + " MB" 
             : Math.round(file.size / 1024) + " KB";
             
-          const res = await fetch(`http://localhost:8080/api/documents`, {
+          const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/documents`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
             body: JSON.stringify({ name: file.name, size: sizeStr, data: base64Data })
@@ -131,7 +131,7 @@ function ChatPage() {
           if (res.ok) {
             toast.success("Document uploaded successfully");
             const realId = activeId.replace("CONS-", "");
-            await fetch(`http://localhost:8080/api/chat/${realId}`, {
+            await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
               method: "POST",
               headers: {
                 "Authorization": `Bearer ${getToken()}`,

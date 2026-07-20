@@ -33,7 +33,7 @@ function DoctorAppointments() {
     const fetchAppointments = async () => {
       try {
         const token = getToken();
-        const res = await fetch("http://localhost:8080/api/appointments/all", {
+        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -80,7 +80,7 @@ function DoctorAppointments() {
   const startConsultation = async (id: string, type: string) => {
     try {
       const realId = id.replace("CONS-", "");
-      const res = await fetch(`http://localhost:8080/api/appointments/${realId}/status?status=in_progress`, {
+      const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/status?status=in_progress`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${getToken()}` }
       });

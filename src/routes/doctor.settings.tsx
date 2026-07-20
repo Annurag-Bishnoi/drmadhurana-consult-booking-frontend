@@ -22,7 +22,7 @@ function DoctorSettings() {
   const [newSlot, setNewSlot] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/settings/slots")
+    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots")
       .then(res => res.json())
       .then(data => setSlots(data))
       .catch(() => toast.error("Failed to fetch slots"));
@@ -44,7 +44,7 @@ function DoctorSettings() {
 
   const saveSlots = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/settings/slots", {
+      const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -33,7 +33,7 @@ function DoctorVideo() {
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/appointments/all`, {
+    fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all`, {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())
@@ -57,7 +57,7 @@ function DoctorVideo() {
     try {
       if (id) {
         const realId = id.replace("CONS-", "");
-        await fetch(`http://localhost:8080/api/appointments/${realId}/status?status=completed`, {
+        await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/status?status=completed`, {
           method: "PUT",
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
@@ -115,7 +115,7 @@ function DoctorVideo() {
                 if(!id) return;
                 const realId = id.replace("CONS-", "");
                 try {
-                  const url = activeTab === "notes" ? `http://localhost:8080/api/appointments/${realId}/notes` : `http://localhost:8080/api/appointments/${realId}/prescription`;
+                  const url = activeTab === "notes" ? `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/notes` : `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/prescription`;
                   const body = activeTab === "notes" ? { notes } : { prescription };
                   const res = await fetch(url, {
                     method: "PUT",
