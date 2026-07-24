@@ -80,7 +80,7 @@ function Hero() {
 function Stats() {
   const items = [
     { icon: Award, label: "Years experience", value: "15+" },
-    { icon: Users, label: "Patients consulted", value: "10,000+" },
+    { icon: Users, label: "Patients consulted", value: "2000+" },
     { icon: Star, label: "Patient rating", value: "4.9/5" },
     { icon: ShieldCheck, label: "Board certified", value: "MS, FMAS" },
   ];
@@ -224,7 +224,6 @@ function CTA() {
           </div>
           <div className="flex flex-wrap gap-3 md:justify-end">
             <Button asChild size="lg" variant="secondary"><Link to="/book">Book consultation</Link></Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/services">Compare plans</Link></Button>
           </div>
         </div>
       </div>

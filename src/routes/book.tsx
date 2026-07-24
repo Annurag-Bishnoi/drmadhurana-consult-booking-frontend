@@ -66,16 +66,23 @@ function Book() {
   };
 
   useEffect(() => {
-    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots")
+    if (!date) return;
+    const dateStr = format(date, "yyyy-MM-dd");
+    fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots?date=${dateStr}`)
       .then(r => r.json())
       .then(data => {
+        setAvailableTimeSlots(data || []);
         if (data && data.length > 0) {
-          setAvailableTimeSlots(data);
           setTime(data[0]);
+        } else {
+          setTime("");
         }
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => {
+        setAvailableTimeSlots([]);
+        setTime("");
+      });
+  }, [date]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -284,6 +291,11 @@ function Book() {
                           {t}
                         </button>
                       ))}
+                      {availableTimeSlots.length === 0 && (
+                        <div className="col-span-full rounded-lg border border-dashed border-border/60 bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
+                          No slots available for this date.<br/>Please choose another day.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
