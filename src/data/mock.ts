@@ -1,4 +1,4 @@
-import doctorImg from "@/assets/dr-loverpreet.jpg";
+import doctorImg from "@/assets/dr-loverpreet.png";
 
 export const doctor = {
   name: "Prof. Dr. Madhu Lata Rana",
