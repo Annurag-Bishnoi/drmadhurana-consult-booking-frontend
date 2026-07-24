@@ -39,7 +39,7 @@ function Hero() {
             Consult with an <span className="text-primary">experienced surgeon</span>, from anywhere.
           </h1>
           <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Get trusted medical guidance from Dr. Loverpreet Singh through secure chat, voice, and video consultations — with real prescriptions and follow-ups.
+            Get trusted medical guidance from {doctor.name} through secure chat, voice, and video consultations — with real prescriptions and follow-ups.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg">
@@ -50,7 +50,6 @@ function Hero() {
             </Button>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Response within 30 mins</div>
             <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Digital prescription</div>
             <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> 100% private</div>
           </div>
@@ -111,7 +110,7 @@ function Services() {
       <div className="mx-auto max-w-2xl text-center">
         <div className="text-sm font-medium text-primary">Consultations</div>
         <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Pick the way you want to consult</h2>
-        <p className="mt-3 text-muted-foreground">Three ways to reach Dr. Singh — all secure, private and fully digital.</p>
+        <p className="mt-3 text-muted-foreground">Three ways to reach Dr. Rana — all secure, private and fully digital.</p>
       </div>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {opts.map((o) => {
@@ -134,7 +133,7 @@ function Services() {
                 </div>
                 <div className="mt-auto flex items-end justify-between pt-4">
                   <div>
-                    <div className="text-2xl font-semibold">₹{o.fee}</div>
+                    <div className="text-2xl font-semibold">₹{o.fee} / ${o.feeUsd}</div>
                     <div className="text-xs text-muted-foreground">per consultation</div>
                   </div>
                   <Button asChild size="sm">
@@ -176,7 +175,7 @@ function Expertise() {
 
 function Testimonials() {
   const items = [
-    { name: "Meera S.", text: "The video consult felt as thorough as an in-person visit. Dr. Singh was patient and precise.", role: "Post-op follow-up" },
+    { name: "Meera S.", text: "The video consult felt as thorough as an in-person visit. Prof. Rana was patient and precise.", role: "Post-op follow-up" },
     { name: "Karan D.", text: "Booked a chat consultation for my father's report. Got a detailed reply within 20 minutes.", role: "Report review" },
     { name: "Neha R.", text: "Kind, honest and never pushes unnecessary procedures. Highly recommend.", role: "Second opinion" },
   ];

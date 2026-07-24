@@ -13,7 +13,7 @@ function Settings() {
     { k: "Email notifications", d: "Receive booking updates in your inbox" },
     { k: "SMS reminders", d: "Get an SMS 30 minutes before appointments" },
     { k: "WhatsApp updates", d: "Consultation reminders on WhatsApp" },
-    { k: "Marketing emails", d: "Occasional health tips from Dr. Singh" },
+    { k: "Marketing emails", d: "Occasional health tips from Prof. Dr. Rana" },
   ];
   return (
     <PatientShell title="Settings">

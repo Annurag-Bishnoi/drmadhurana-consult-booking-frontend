@@ -21,7 +21,7 @@ import { toast } from "sonner";
 type Search = { type?: ConsultationType };
 
 export const Route = createFileRoute("/book")({
-  head: () => ({ meta: [{ title: "Book a Consultation — Dr. Loverpreet Singh" }] }),
+  head: () => ({ meta: [{ title: "Book a Consultation — Prof. Dr. Madhu Lata Rana" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     type: (["chat", "voice", "video"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
   }),

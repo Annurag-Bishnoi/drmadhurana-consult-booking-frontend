@@ -1,15 +1,15 @@
 import doctorImg from "@/assets/dr-loverpreet.jpg";
 
 export const doctor = {
-  name: "Dr. Loverpreet Singh",
-  specialty: "General & Laparoscopic Surgeon",
-  experience: "15+ Years",
-  qualification: "MBBS, MS (General Surgery), FMAS",
+  name: "Prof. Dr. Madhu Lata Rana",
+  specialty: "Laparoscopic & General Surgeon",
+  experience: "17+ Years",
+  qualification: "MBBS, MS, FMAS, FISCP",
   rating: 4.9,
   reviews: 1284,
   patients: "10,000+",
   image: doctorImg,
-  bio: "Dr. Loverpreet Singh is a board-certified general and laparoscopic surgeon with over 15 years of experience treating patients across India. He specializes in minimally invasive gastrointestinal procedures, hernia repair, and gallbladder surgery, and is known for a warm, patient-first approach.",
+  bio: "Prof. Dr. Madhu Lata Rana is a dedicated and highly skilled General and Laparoscopic Surgeon with extensive experience of more than 17 years in managing a wide range of surgical conditions. She is committed to providing safe, ethical, and patient-centered care using evidence-based surgical practices and modern minimally invasive techniques.\n\nHer expertise includes laparoscopic surgery, gastrointestinal surgery, hepatobiliary surgery, breast surgery, anorectal procedures, trauma and emergency surgery, and the management of various abdominal wall and inguinal hernias. She has successfully performed numerous complex surgical procedures with a focus on precision, faster recovery, minimal postoperative pain, and improved patient outcomes.\n\nAlong with her clinical practice, Dr. Rana is actively involved in research, medical education and academic activities. She has more than 17 research papers published in various National and International Journals. She is passionate about mentoring medical students and young surgeons while continuously updating her knowledge through professional training and scientific conferences.\n\nKnown for her compassionate approach, clear communication, and commitment to excellence, Dr. Rana believes in treating every patient with dignity, empathy, and individualized care. Her goal is to combine surgical expertise with genuine compassion to help patients achieve the best possible outcomes and an improved quality of life.",
   education: [
     { degree: "MBBS", institute: "Government Medical College, Amritsar", year: "2005" },
     { degree: "MS General Surgery", institute: "PGIMER, Chandigarh", year: "2010" },
@@ -39,6 +39,7 @@ export const consultationOptions: Record<ConsultationType, {
   tagline: string;
   description: string;
   fee: number;
+  feeUsd: number;
   duration: string;
   response: string;
 }> = {
@@ -47,7 +48,8 @@ export const consultationOptions: Record<ConsultationType, {
     title: "Chat Consultation",
     tagline: "Message the doctor securely",
     description: "Response-based secure medical conversation. Ideal for follow-ups, reports and small concerns.",
-    fee: 499,
+    fee: 500,
+    feeUsd: 12,
     duration: "24 hr window",
     response: "Reply within 30 mins",
   },
@@ -56,7 +58,8 @@ export const consultationOptions: Record<ConsultationType, {
     title: "Voice Consultation",
     tagline: "Talk directly with the doctor",
     description: "Scheduled private voice call. Great when you want to explain symptoms in detail.",
-    fee: 799,
+    fee: 500,
+    feeUsd: 12,
     duration: "15 mins",
     response: "Scheduled slot",
   },
@@ -65,7 +68,8 @@ export const consultationOptions: Record<ConsultationType, {
     title: "Video Consultation",
     tagline: "Face-to-face online visit",
     description: "Secure HD video appointment with visual examination and prescription.",
-    fee: 1199,
+    fee: 1000,
+    feeUsd: 24,
     duration: "20 mins",
     response: "Scheduled slot",
   },

@@ -9,10 +9,10 @@ import { Award, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Dr. Loverpreet Singh — Surgeon Profile" },
-      { name: "description", content: "Learn about Dr. Loverpreet Singh, his qualifications, experience, awards and areas of expertise." },
-      { property: "og:title", content: "About Dr. Loverpreet Singh" },
-      { property: "og:description", content: "Board-certified surgeon with 15+ years of experience." },
+      { title: "About Prof. Dr. Madhu Lata Rana — Surgeon Profile" },
+      { name: "description", content: "Learn about Prof. Dr. Madhu Lata Rana, her qualifications, experience, awards and areas of expertise." },
+      { property: "og:title", content: "About Prof. Dr. Madhu Lata Rana" },
+      { property: "og:description", content: "Board-certified surgeon with 17+ years of experience." },
     ],
   }),
   component: About,
@@ -31,7 +31,7 @@ function About() {
             <div className="text-sm font-medium text-primary">About the doctor</div>
             <h1 className="mt-2 text-4xl font-semibold tracking-tight">{doctor.name}</h1>
             <p className="mt-2 text-muted-foreground">{doctor.specialty} · {doctor.qualification}</p>
-            <p className="mt-5 leading-relaxed text-foreground">{doctor.bio}</p>
+            <p className="mt-5 whitespace-pre-wrap leading-relaxed text-foreground">{doctor.bio}</p>
             <div className="mt-6 grid grid-cols-3 gap-3">
               <Stat label="Experience" value={doctor.experience} />
               <Stat label="Patients" value={doctor.patients} />
@@ -77,6 +77,18 @@ function About() {
               {doctor.awards.map((a) => (
                 <li key={a} className="flex items-start gap-2"><Award className="mt-0.5 h-4 w-4 text-primary" /> {a}</li>
               ))}
+            </ul>
+          </Section>
+          <Section title="Original Patient Reviews" icon={CheckCircle2}>
+            <ul className="space-y-4 text-sm">
+              <li className="rounded-lg border border-border/60 bg-secondary/20 p-3">
+                <div className="font-medium">"Patient Review 1"</div>
+                <div className="text-xs text-muted-foreground mt-1">- To be provided</div>
+              </li>
+              <li className="rounded-lg border border-border/60 bg-secondary/20 p-3">
+                <div className="font-medium">"Patient Review 2"</div>
+                <div className="text-xs text-muted-foreground mt-1">- To be provided</div>
+              </li>
             </ul>
           </Section>
         </div>

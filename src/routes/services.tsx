@@ -10,10 +10,10 @@ import { MessageSquare, Phone, Video, CheckCircle2 } from "lucide-react";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Consultations — Dr. Loverpreet Singh" },
+      { title: "Consultations — Prof. Dr. Madhu Lata Rana" },
       { name: "description", content: "Choose between chat, voice or video consultations. Transparent pricing, secure and private." },
       { property: "og:title", content: "Consultations" },
-      { property: "og:description", content: "Chat, voice and video consultations with Dr. Loverpreet Singh." },
+      { property: "og:description", content: "Chat, voice and video consultations with Prof. Dr. Madhu Lata Rana." },
     ],
   }),
   component: Services,
@@ -52,7 +52,7 @@ function Services() {
                   </ul>
                   <div className="mt-auto flex items-end justify-between pt-4">
                     <div>
-                      <div className="text-2xl font-semibold">₹{o.fee}</div>
+                      <div className="text-2xl font-semibold">₹{o.fee} / ${o.feeUsd}</div>
                       <div className="text-xs text-muted-foreground">per consultation</div>
                     </div>
                     <Button asChild><Link to="/book" search={{ type: o.id }}>Book {o.title.split(" ")[0]}</Link></Button>

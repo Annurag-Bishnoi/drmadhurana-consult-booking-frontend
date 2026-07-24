@@ -44,7 +44,7 @@ export function DashboardShell({
             <Stethoscope className="h-5 w-5" />
           </span>
           <div className="leading-tight">
-            <div className="text-sm font-semibold">Dr. Loverpreet</div>
+            <div className="text-sm font-semibold">Prof. Dr. Madhu</div>
             <div className="text-[11px] capitalize text-muted-foreground">{role} portal</div>
           </div>
         </Link>

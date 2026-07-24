@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Stethoscope, LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { doctor } from "@/data/doctor";
 
 export function PublicHeader() {
   const { user, logout } = useAuth();
@@ -16,7 +17,7 @@ export function PublicHeader() {
             <Stethoscope className="h-5 w-5" />
           </span>
           <div className="leading-tight">
-            <div className="text-sm font-semibold text-foreground">Dr. Loverpreet Singh</div>
+            <div className="text-sm font-semibold text-foreground">{doctor.name}</div>
             <div className="text-[11px] text-muted-foreground">General &amp; Laparoscopic Surgeon</div>
           </div>
         </Link>

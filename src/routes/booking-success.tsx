@@ -11,7 +11,7 @@ type Search = {
 };
 
 export const Route = createFileRoute("/booking-success")({
-  head: () => ({ meta: [{ title: "Booking confirmed — Dr. Loverpreet Singh" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Booking confirmed — Prof. Dr. Madhu Lata Rana" }, { name: "robots", content: "noindex" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     id: typeof s.id === "string" ? s.id : undefined,
     type: (["chat","voice","video"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,

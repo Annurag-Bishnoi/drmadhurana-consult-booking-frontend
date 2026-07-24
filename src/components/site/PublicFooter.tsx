@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Stethoscope } from "lucide-react";
+import { doctor } from "@/data/mock";
 
 export function PublicFooter() {
   return (
@@ -10,7 +11,7 @@ export function PublicFooter() {
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
               <Stethoscope className="h-5 w-5" />
             </span>
-            <div className="font-semibold">Dr. Loverpreet Singh</div>
+            <div className="font-semibold">{doctor.name}</div>
           </div>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
             Trusted online surgical consultations via secure chat, voice and video. Serving 10,000+ patients across India.
@@ -27,14 +28,14 @@ export function PublicFooter() {
         <div>
           <div className="mb-3 text-sm font-semibold">Contact</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>care@drloverpreet.in</li>
-            <li>+91 80000 12345</li>
-            <li>Mohali, Punjab</li>
+            <li>maadhurrana@gmail.com</li>
+            <li>+91 7351025135</li>
+            <li>Dehradun, Uttarakhand</li>
           </ul>
         </div>
       </div>
       <div className="border-t border-border/60 py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Dr. Loverpreet Singh. All rights reserved.
+        © {new Date().getFullYear()} {doctor.name}. All rights reserved.
       </div>
     </footer>
   );

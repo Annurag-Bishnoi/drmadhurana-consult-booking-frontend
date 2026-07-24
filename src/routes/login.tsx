@@ -36,7 +36,7 @@ function LoginComponent() {
   const [patientConfirmPassword, setPatientConfirmPassword] = useState("");
 
   // Admin form
-  const [adminEmail, setAdminEmail] = useState("admin@drloverpreet.com");
+  const [adminEmail, setAdminEmail] = useState("admin@drmadhurana.com");
   const [adminPassword, setAdminPassword] = useState("");
 
   // Handle Google OAuth callback token
@@ -109,7 +109,7 @@ function LoginComponent() {
     setIsSubmitting(true);
     try {
       await loginAdmin(adminEmail, adminPassword);
-      toast.success("Welcome back, Dr. Loverpreet!");
+      toast.success("Welcome back, Prof. Dr. Madhu!");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Invalid admin credentials";
       toast.error(message);
@@ -273,7 +273,7 @@ function LoginComponent() {
                     {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span>Enter Dashboard</span><ArrowRight className="h-4 w-4" /></>}
                   </Button>
                   <p className="text-center text-xs text-muted-foreground mt-2">
-                    Default: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin@drloverpreet.com</code> / <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin1234</code>
+                    Default: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin@drmadhurana.com</code> / <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin1234</code>
                   </p>
                 </form>
               </CardContent>

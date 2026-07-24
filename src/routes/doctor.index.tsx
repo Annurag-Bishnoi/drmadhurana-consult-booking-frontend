@@ -34,7 +34,7 @@ function DoctorOverview() {
   return (
     <DoctorShell title="Overview">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold">Welcome back, {user?.name || "Dr. Singh"}</h2>
+        <h2 className="text-2xl font-semibold">Welcome back, {user?.name || "Prof. Dr. Rana"}</h2>
         <p className="text-sm text-muted-foreground">You have {today.length} consultations scheduled today.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
