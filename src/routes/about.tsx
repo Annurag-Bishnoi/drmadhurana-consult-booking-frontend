@@ -4,7 +4,7 @@ import { PublicFooter } from "@/components/site/PublicFooter";
 import { doctor } from "@/data/mock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Award, GraduationCap, Building2, CheckCircle2, Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus, Star, Quote } from "lucide-react";
+import { Award, GraduationCap, Building2, CheckCircle2, Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus, Star, Quote, BookOpen, ShieldCheck, Microscope } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -46,10 +46,16 @@ function About() {
 
         <div className="mt-16 grid gap-6 md:grid-cols-2">
           <Section title="Degrees & Qualifications" icon={GraduationCap}>
-            <div className="flex flex-wrap gap-3">
-              {["MBBS", "MS (General Surgery)", "FMAS", "FISCP"].map((d) => (
-                <div key={d} className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary">
-                  <GraduationCap className="h-4 w-4" /> {d}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2">
+              {[
+                { name: "MBBS", icon: BookOpen },
+                { name: "MS (General Surgery)", icon: Microscope },
+                { name: "FMAS", icon: ShieldCheck },
+                { name: "FISCP", icon: Award }
+              ].map((d) => (
+                <div key={d.name} className="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-border/50 bg-secondary/20 p-4 text-center transition-colors hover:border-primary/30 hover:bg-primary/5">
+                  <d.icon className="h-6 w-6 text-primary/70" />
+                  <span className="text-xs font-semibold text-foreground">{d.name}</span>
                 </div>
               ))}
             </div>

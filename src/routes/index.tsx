@@ -79,7 +79,7 @@ function Hero() {
 
 function Stats() {
   const items = [
-    { icon: Award, label: "Years experience", value: "15+" },
+    { icon: Award, label: "Years experience", value: "17+" },
     { icon: Users, label: "Patients consulted", value: "2000+" },
     { icon: Star, label: "Patient rating", value: "4.9/5" },
     { icon: ShieldCheck, label: "Board certified", value: "MS, FMAS" },
