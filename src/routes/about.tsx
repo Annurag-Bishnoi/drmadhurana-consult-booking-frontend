@@ -4,7 +4,7 @@ import { PublicFooter } from "@/components/site/PublicFooter";
 import { doctor } from "@/data/mock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Award, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
+import { Award, GraduationCap, Building2, CheckCircle2, Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus, Star, Quote } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -45,51 +45,44 @@ function About() {
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2">
-          <Section title="Education" icon={GraduationCap}>
-            <ul className="space-y-3">
-              {doctor.education.map((e) => (
-                <li key={e.degree} className="flex items-start justify-between rounded-lg border border-border/60 bg-secondary/40 p-3 text-sm">
-                  <div>
-                    <div className="font-medium">{e.degree}</div>
-                    <div className="text-muted-foreground">{e.institute}</div>
-                  </div>
-                  <span className="text-muted-foreground">{e.year}</span>
-                </li>
-              ))}
-            </ul>
-          </Section>
-          <Section title="Hospital Affiliations" icon={Building2}>
-            <ul className="space-y-2">
-              {doctor.hospitals.map((h) => (
-                <li key={h} className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-primary" /> {h}</li>
-              ))}
-            </ul>
-          </Section>
-          <Section title="Areas of Expertise" icon={CheckCircle2}>
-            <div className="flex flex-wrap gap-2">
-              {doctor.expertise.map((e) => (
-                <span key={e} className="rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs">{e}</span>
+          <Section title="Degrees & Qualifications" icon={GraduationCap}>
+            <div className="flex flex-wrap gap-3">
+              {["MBBS", "MS (General Surgery)", "FMAS", "FISCP"].map((d) => (
+                <div key={d} className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary">
+                  <GraduationCap className="h-4 w-4" /> {d}
+                </div>
               ))}
             </div>
           </Section>
-          <Section title="Awards" icon={Award}>
-            <ul className="space-y-2 text-sm">
-              {doctor.awards.map((a) => (
-                <li key={a} className="flex items-start gap-2"><Award className="mt-0.5 h-4 w-4 text-primary" /> {a}</li>
+
+          <Section title="Areas of Expertise" icon={Stethoscope}>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {[
+                { name: "General Surgery", icon: Stethoscope },
+                { name: "Laparoscopic Surgery", icon: Activity },
+                { name: "Gastrointestinal", icon: HeartPulse },
+                { name: "Hernia Treatment", icon: ShieldPlus },
+                { name: "Gallbladder", icon: Syringe },
+                { name: "Post-op Care", icon: MessageSquarePlus }
+              ].map((e) => (
+                <div key={e.name} className="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-border/50 bg-secondary/20 p-4 text-center transition-colors hover:border-primary/30 hover:bg-primary/5">
+                  <e.icon className="h-6 w-6 text-primary/70" />
+                  <span className="text-xs font-semibold text-foreground">{e.name}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </Section>
-          <Section title="Original Patient Reviews" icon={CheckCircle2}>
-            <ul className="space-y-4 text-sm">
-              <li className="rounded-lg border border-border/60 bg-secondary/20 p-3">
-                <div className="font-medium">"Patient Review 1"</div>
-                <div className="text-xs text-muted-foreground mt-1">- To be provided</div>
-              </li>
-              <li className="rounded-lg border border-border/60 bg-secondary/20 p-3">
-                <div className="font-medium">"Patient Review 2"</div>
-                <div className="text-xs text-muted-foreground mt-1">- To be provided</div>
-              </li>
-            </ul>
+
+          <Section title="Original Patient Reviews" icon={Quote}>
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border/60 bg-secondary/10 p-8 text-center">
+              <div className="mb-3 flex gap-1">
+                {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="h-5 w-5 fill-muted text-muted/30" />)}
+              </div>
+              <p className="text-base font-semibold text-foreground">Awaiting Reviews</p>
+              <p className="mt-1.5 max-w-[250px] text-xs text-muted-foreground">
+                Authentic patient experiences and ratings will be published here very soon.
+              </p>
+            </div>
           </Section>
         </div>
       </section>

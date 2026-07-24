@@ -43,15 +43,15 @@ function LoginComponent() {
   useEffect(() => {
     if (search.token) {
       loginWithToken(search.token);
-      toast.success("Successfully signed in with Google!");
-      navigate({ to: "/patient" });
+      toast.success("Successfully signed in with Google!", { id: "google-login-success" });
+      navigate({ to: search.redirect || "/" });
     }
   }, [search.token, loginWithToken, navigate]);
 
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user && !search.token) {
-      const dest = user.role === "doctor" ? "/doctor" : "/patient";
+      const dest = user.role === "doctor" ? "/doctor" : (search.redirect || "/");
       navigate({ to: dest });
     }
   }, [user, authLoading, navigate, search.token]);
@@ -72,7 +72,7 @@ function LoginComponent() {
           return;
         }
         await loginPatient(patientEmail, patientPassword);
-        toast.success("Welcome back!");
+        toast.success("Welcome back!", { id: "patient-login-success" });
       } else {
         if (!patientName || !patientEmail || !patientPassword) {
           toast.error("Please fill in all fields.");
@@ -90,7 +90,7 @@ function LoginComponent() {
           return;
         }
         await registerPatient(patientName, patientEmail, patientPassword);
-        toast.success("Account created successfully!");
+        toast.success("Account created successfully!", { id: "patient-register-success" });
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
@@ -109,7 +109,7 @@ function LoginComponent() {
     setIsSubmitting(true);
     try {
       await loginAdmin(adminEmail, adminPassword);
-      toast.success("Welcome back, Prof. Dr. Madhu!");
+      toast.success("Welcome back, Prof. Dr. Madhu!", { id: "admin-login-success" });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Invalid admin credentials";
       toast.error(message);

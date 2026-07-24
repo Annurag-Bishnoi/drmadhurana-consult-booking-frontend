@@ -51,7 +51,7 @@ export const consultationOptions: Record<ConsultationType, {
     fee: 500,
     feeUsd: 12,
     duration: "24 hr window",
-    response: "Reply within 30 mins",
+    response: "Response based on availability",
   },
   voice: {
     id: "voice",

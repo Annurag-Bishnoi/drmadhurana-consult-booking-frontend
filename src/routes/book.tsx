@@ -80,10 +80,10 @@ function Book() {
   // Redirect if not logged in
   useEffect(() => {
     if (!isLoading && !user) {
-      toast.error("Please login before booking a consultation");
+      toast.error("Please login before booking a consultation", { id: "login-required" });
       navigate({ to: "/login", search: { redirect: "/book" } });
     }
-  }, [user, isLoading, navigate]);
+  }, [isLoading, user, navigate]);
 
   // Pre-fill form from Google account details
   useEffect(() => {

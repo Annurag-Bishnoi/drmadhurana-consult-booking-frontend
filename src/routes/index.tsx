@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { doctor, consultationOptions } from "@/data/mock";
 import {
   Star, Award, Users, ShieldCheck, MessageSquare, Phone, Video, ArrowRight, Clock, CheckCircle2,
+  Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -156,15 +157,27 @@ function Expertise() {
         <div>
           <div className="text-sm font-medium text-primary">Areas of expertise</div>
           <h2 className="mt-2 text-3xl font-semibold tracking-tight">Specialised care, backed by experience</h2>
-          <p className="mt-3 text-muted-foreground">{doctor.bio}</p>
+          <p className="mt-3 text-muted-foreground leading-relaxed">
+            Prof. Dr. Madhu Lata Rana is a highly skilled surgeon with over 17 years of experience in safe, patient-centered care. She specializes in modern minimally invasive techniques, ensuring precision, faster recovery, and the best possible outcomes for her patients.
+          </p>
           <Button asChild variant="outline" className="mt-6">
             <Link to="/about">Read full profile <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
         </div>
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {doctor.expertise.map((e) => (
-            <li key={e} className="flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-3 text-sm">
-              <CheckCircle2 className="h-4 w-4 text-primary" /> {e}
+          {[
+            { name: "General Surgery", icon: Stethoscope },
+            { name: "Laparoscopic Surgery", icon: Activity },
+            { name: "Gastrointestinal Surgery", icon: HeartPulse },
+            { name: "Hernia Treatment", icon: ShieldPlus },
+            { name: "Gallbladder Surgery", icon: Syringe },
+            { name: "Post-op Consultation", icon: MessageSquarePlus }
+          ].map((e) => (
+            <li key={e.name} className="flex items-center gap-3 rounded-xl border border-border/50 bg-card px-3 py-2.5 transition-all hover:border-primary/30 hover:shadow-sm">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+                <e.icon className="h-4 w-4" />
+              </span>
+              <span className="text-sm font-medium text-foreground">{e.name}</span>
             </li>
           ))}
         </ul>

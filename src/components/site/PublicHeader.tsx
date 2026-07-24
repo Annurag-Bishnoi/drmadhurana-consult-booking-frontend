@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Stethoscope, LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { doctor } from "@/data/doctor";
+import { doctor } from "@/data/mock";
 
 export function PublicHeader() {
   const { user, logout } = useAuth();
