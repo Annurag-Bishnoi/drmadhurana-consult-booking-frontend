@@ -17,8 +17,8 @@ export function PublicHeader() {
             <Stethoscope className="h-5 w-5" />
           </span>
           <div className="leading-tight">
-            <div className="text-sm font-semibold text-foreground">{doctor.name}</div>
-            <div className="text-[11px] text-muted-foreground">General &amp; Laparoscopic Surgeon</div>
+            <div className="text-base font-bold text-foreground">{doctor.name}</div>
+            <div className="text-[11px] font-medium text-muted-foreground">General &amp; Laparoscopic Surgeon</div>
           </div>
         </Link>
         

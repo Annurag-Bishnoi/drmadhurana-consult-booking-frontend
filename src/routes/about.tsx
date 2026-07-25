@@ -80,14 +80,23 @@ function About() {
           </Section>
 
           <Section title="Original Patient Reviews" icon={Quote}>
-            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border/60 bg-secondary/10 p-8 text-center">
-              <div className="mb-3 flex gap-1">
-                {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="h-5 w-5 fill-muted text-muted/30" />)}
-              </div>
-              <p className="text-base font-semibold text-foreground">Awaiting Reviews</p>
-              <p className="mt-1.5 max-w-[250px] text-xs text-muted-foreground">
-                Authentic patient experiences and ratings will be published here very soon.
-              </p>
+            <div className="flex flex-col gap-4">
+              {[
+                { name: "Fozia Malik", text: "Being diagnosed with gallstones and an umbilical hernia was overwhelming, but meeting Dr. Madhulata Rana made all the difference. She is incredibly kind..." },
+                { name: "Khushi Chaudhary", text: "My mother was treated by Dr. Madhu lata rana and we had a very positive experience. She performed the surgery with great care and skill..." },
+                { name: "Arvind Bhujwan", text: "The way of speaking of mam is very polite and calm which made patient feel comfortable and confident throughout the treatment. I am very thankful..." },
+              ].map((t) => (
+                <div key={t.name} className="rounded-xl border border-border/50 bg-secondary/10 p-4">
+                  <div className="flex mb-2 text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary" />)}</div>
+                  <p className="text-sm text-foreground">"{t.text}"</p>
+                  <div className="mt-2 text-xs font-semibold">{t.name}</div>
+                </div>
+              ))}
+              <Button variant="outline" className="w-full mt-2" asChild>
+                <a href="https://www.google.com/search?q=Dr.+Madhu+Lata+Rana+reviews" target="_blank" rel="noopener noreferrer">
+                  See all 69 reviews on Google
+                </a>
+              </Button>
             </div>
           </Section>
         </div>

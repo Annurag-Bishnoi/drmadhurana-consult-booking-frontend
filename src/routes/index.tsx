@@ -80,9 +80,9 @@ function Hero() {
 function Stats() {
   const items = [
     { icon: Award, label: "Years experience", value: "17+" },
-    { icon: Users, label: "Patients consulted", value: "2000+" },
+    { icon: Users, label: "Patients consulted", value: "10000+" },
     { icon: Star, label: "Patient rating", value: "4.9/5" },
-    { icon: ShieldCheck, label: "Board certified", value: "MS, FMAS" },
+    { icon: ShieldCheck, label: "Board certified", value: "MBBS, MS, FMAS, FISCP" },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -188,9 +188,9 @@ function Expertise() {
 
 function Testimonials() {
   const items = [
-    { name: "Meera S.", text: "The video consult felt as thorough as an in-person visit. Prof. Rana was patient and precise.", role: "Post-op follow-up" },
-    { name: "Karan D.", text: "Booked a chat consultation for my father's report. Got a detailed reply within 20 minutes.", role: "Report review" },
-    { name: "Neha R.", text: "Kind, honest and never pushes unnecessary procedures. Highly recommend.", role: "Second opinion" },
+    { name: "Fozia Malik", text: "Being diagnosed with gallstones and an umbilical hernia was overwhelming, but meeting Dr. Madhulata Rana made all the difference. She is incredibly kind...", role: "Patient" },
+    { name: "Khushi Chaudhary", text: "My mother was treated by Dr. Madhu lata rana and we had a very positive experience. She performed the surgery with great care and skill...", role: "Patient" },
+    { name: "Arvind Bhujwan", text: "The way of speaking of mam is very polite and calm which made patient feel comfortable and confident throughout the treatment. I am very thankful...", role: "Patient" },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
@@ -204,10 +204,16 @@ function Testimonials() {
               <div className="flex text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary" />)}</div>
               <p className="mt-3 text-sm text-foreground">"{t.text}"</p>
               <div className="mt-4 text-sm font-medium">{t.name}</div>
-              <div className="text-xs text-muted-foreground">{t.role}</div>
             </CardContent>
           </Card>
         ))}
+      </div>
+      <div className="mt-10 text-center">
+        <Button variant="outline" asChild>
+          <a href="https://www.google.com/search?q=Dr.+Madhu+Lata+Rana+reviews" target="_blank" rel="noopener noreferrer">
+            See all 69 reviews on Google
+          </a>
+        </Button>
       </div>
     </section>
   );

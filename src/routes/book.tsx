@@ -244,7 +244,7 @@ function Book() {
                   <div className="mt-8 rounded-xl border border-border/60 bg-muted/20 p-5">
                     <h3 className="text-sm font-semibold mb-3">Select duration</h3>
                     <div className="flex flex-wrap gap-3">
-                      {[15, 20, 25, 30].map(mins => (
+                      {[10, 15, 20, 25, 30].map(mins => (
                         <button
                           key={mins}
                           onClick={() => setDuration(mins)}
