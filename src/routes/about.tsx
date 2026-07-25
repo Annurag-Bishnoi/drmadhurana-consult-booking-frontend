@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicHeader } from "@/components/site/PublicHeader";
 import { PublicFooter } from "@/components/site/PublicFooter";
 import { doctor } from "@/data/mock";
+import { allReviews } from "@/data/reviews";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Award, GraduationCap, Building2, CheckCircle2, Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus, Star, Quote, BookOpen, ShieldCheck, Microscope } from "lucide-react";
@@ -79,26 +80,19 @@ function About() {
             </div>
           </Section>
 
-          <Section title="Original Patient Reviews" icon={Quote}>
-            <div className="flex flex-col gap-4">
-              {[
-                { name: "Fozia Malik", text: "Being diagnosed with gallstones and an umbilical hernia was overwhelming, but meeting Dr. Madhulata Rana made all the difference. She is incredibly kind..." },
-                { name: "Khushi Chaudhary", text: "My mother was treated by Dr. Madhu lata rana and we had a very positive experience. She performed the surgery with great care and skill..." },
-                { name: "Arvind Bhujwan", text: "The way of speaking of mam is very polite and calm which made patient feel comfortable and confident throughout the treatment. I am very thankful..." },
-              ].map((t) => (
-                <div key={t.name} className="rounded-xl border border-border/50 bg-secondary/10 p-4">
-                  <div className="flex mb-2 text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary" />)}</div>
-                  <p className="text-sm text-foreground">"{t.text}"</p>
-                  <div className="mt-2 text-xs font-semibold">{t.name}</div>
-                </div>
-              ))}
-              <Button variant="outline" className="w-full mt-2" asChild>
-                <a href="https://www.google.com/search?q=Dr.+Madhu+Lata+Rana+reviews" target="_blank" rel="noopener noreferrer">
-                  See all 69 reviews on Google
-                </a>
-              </Button>
-            </div>
-          </Section>
+          <div id="reviews">
+            <Section title="Patient Reviews" icon={Quote}>
+              <div className="flex flex-col gap-4 max-h-[800px] overflow-y-auto pr-2">
+                {allReviews.map((t, index) => (
+                  <div key={index} className="rounded-xl border border-border/50 bg-secondary/10 p-4">
+                    <div className="flex mb-2 text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary" />)}</div>
+                    <p className="text-sm text-foreground">"{t.text}"</p>
+                    <div className="mt-2 text-xs font-semibold">{t.name}</div>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
         </div>
       </section>
       <PublicFooter />

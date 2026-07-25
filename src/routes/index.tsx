@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { doctor, consultationOptions } from "@/data/mock";
+import { allReviews } from "@/data/reviews";
 import {
   Star, Award, Users, ShieldCheck, MessageSquare, Phone, Video, ArrowRight, Clock, CheckCircle2,
   Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus,
@@ -187,11 +188,7 @@ function Expertise() {
 }
 
 function Testimonials() {
-  const items = [
-    { name: "Fozia Malik", text: "Being diagnosed with gallstones and an umbilical hernia was overwhelming, but meeting Dr. Madhulata Rana made all the difference. She is incredibly kind...", role: "Patient" },
-    { name: "Khushi Chaudhary", text: "My mother was treated by Dr. Madhu lata rana and we had a very positive experience. She performed the surgery with great care and skill...", role: "Patient" },
-    { name: "Arvind Bhujwan", text: "The way of speaking of mam is very polite and calm which made patient feel comfortable and confident throughout the treatment. I am very thankful...", role: "Patient" },
-  ];
+  const items = allReviews.slice(0, 3);
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <div className="text-center">
@@ -210,9 +207,9 @@ function Testimonials() {
       </div>
       <div className="mt-10 text-center">
         <Button variant="outline" asChild>
-          <a href="https://www.google.com/search?q=Dr.+Madhu+Lata+Rana+reviews" target="_blank" rel="noopener noreferrer">
-            See all 69 reviews on Google
-          </a>
+          <Link to="/about" hash="reviews">
+            See all reviews
+          </Link>
         </Button>
       </div>
     </section>
