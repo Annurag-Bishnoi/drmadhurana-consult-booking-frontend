@@ -18,7 +18,7 @@ export function PublicHeader() {
           </span>
           <div className="leading-tight">
             <div className="text-base font-bold text-foreground">{doctor.name}</div>
-            <div className="text-[11px] font-medium text-muted-foreground">General &amp; Laparoscopic Surgeon</div>
+            <div className="text-[13px] font-semibold text-primary/80 mt-0.5">General &amp; Laparoscopic Surgeon</div>
           </div>
         </Link>
         
