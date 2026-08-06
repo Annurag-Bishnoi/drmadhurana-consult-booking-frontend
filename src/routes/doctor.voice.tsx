@@ -33,7 +33,7 @@ function DoctorVoice() {
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/appointments/all`, {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())
@@ -58,7 +58,7 @@ function DoctorVoice() {
     try {
       if (id) {
         const realId = id.replace("CONS-", "");
-        await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/status?status=completed`, {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/appointments/${realId}/status?status=completed`, {
           method: "PUT",
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
@@ -84,8 +84,8 @@ function DoctorVoice() {
 
   return (
     <DoctorShell title={`Voice consultation — ${id}`}>
-      <div className="grid h-[80vh] gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="flex flex-col">
+      <div className="flex flex-col lg:grid lg:h-[80vh] gap-6 lg:grid-cols-[2fr_1fr]">
+        <div className="flex flex-col h-[60vh] lg:h-auto">
           <DailyMeetingComponent 
             url={url} 
             audioOnly={true}
@@ -110,7 +110,7 @@ function DoctorVoice() {
                 if(!id) return;
                 const realId = id.replace("CONS-", "");
                 try {
-                  const url = activeTab === "notes" ? `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/notes` : `https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/${realId}/prescription`;
+                  const url = activeTab === "notes" ? `${import.meta.env.VITE_API_BASE_URL}/api/appointments/${realId}/notes` : `${import.meta.env.VITE_API_BASE_URL}/api/appointments/${realId}/prescription`;
                   const body = activeTab === "notes" ? { notes } : { prescription };
                   const res = await fetch(url, {
                     method: "PUT",

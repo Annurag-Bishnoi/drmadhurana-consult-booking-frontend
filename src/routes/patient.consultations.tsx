@@ -28,7 +28,7 @@ function MyConsultations() {
     const fetchAppointments = async () => {
       try {
         const token = getToken();
-        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
+        const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments/me", {
           headers: {
             "Authorization": `Bearer ${token}`
           }

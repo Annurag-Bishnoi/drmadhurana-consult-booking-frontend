@@ -29,7 +29,7 @@ function VideoPage() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
+        const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments/me", {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok) {
@@ -60,8 +60,8 @@ function VideoPage() {
 
   return (
     <PatientShell title={`Video consultation — ${id}`}>
-      <div className="grid h-[80vh] gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="flex flex-col">
+      <div className="flex flex-col lg:grid lg:h-[80vh] gap-6 lg:grid-cols-[2fr_1fr]">
+        <div className="flex flex-col h-[60vh] lg:h-auto">
           <DailyMeetingComponent 
             url={url} 
             onReadyToClose={handleEndCall}

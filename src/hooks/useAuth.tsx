@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 
-const API_BASE = "https://drmadhurana-consult-booking-backend-production.up.railway.app";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export type UserRole = "patient" | "doctor" | null;
 

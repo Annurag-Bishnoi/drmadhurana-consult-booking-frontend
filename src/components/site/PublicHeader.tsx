@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Stethoscope, LogOut } from "lucide-react";
+import { Stethoscope, LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { doctor } from "@/data/mock";
 
 export function PublicHeader() {
@@ -65,15 +66,44 @@ export function PublicHeader() {
               </Button>
             </div>
           ) : (
-            <>
+            <div className="hidden sm:flex items-center gap-3">
               <Button asChild variant="ghost" size="sm">
-                <Link to="/login">Login / Portal</Link>
+                <Link to="/login">Login</Link>
               </Button>
               <Button asChild size="sm">
                 <Link to="/login" search={{ redirect: "/patient" }}>Book Consultation</Link>
               </Button>
-            </>
+            </div>
           )}
+
+          {/* Mobile Navigation Menu */}
+          <div className="md:hidden flex items-center">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[80vw] sm:w-[350px]">
+                <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                <div className="flex flex-col gap-6 mt-8">
+                  <Link to="/" className="text-lg font-medium hover:text-primary">Home</Link>
+                  <Link to="/about" className="text-lg font-medium hover:text-primary">About</Link>
+                  <Link to="/services" className="text-lg font-medium hover:text-primary">Consultations</Link>
+                  {!user && (
+                    <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border/60">
+                      <Button asChild variant="outline" className="w-full">
+                        <Link to="/login">Login / Portal</Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link to="/login" search={{ redirect: "/patient" }}>Book Consultation</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

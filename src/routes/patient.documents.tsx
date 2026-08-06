@@ -22,7 +22,7 @@ function Docs() {
 
   const fetchDocs = async () => {
     try {
-      const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/documents", {
+      const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/api/documents", {
         headers: { "Authorization": `Bearer ${getToken()}` }
       });
       if (res.ok) {
@@ -51,7 +51,7 @@ function Docs() {
             ? (file.size / (1024 * 1024)).toFixed(1) + " MB" 
             : Math.round(file.size / 1024) + " KB";
             
-          const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/documents`, {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/documents`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
             body: JSON.stringify({ name: file.name, size: sizeStr, data: base64Data })

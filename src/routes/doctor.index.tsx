@@ -18,7 +18,7 @@ function DoctorOverview() {
   const [appointments, setAppointments] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/all", {
+    fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments/all", {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())

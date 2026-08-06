@@ -38,7 +38,7 @@ function Book() {
   const [time, setTime] = useState<string>("");
   const [currency, setCurrency] = useState<"INR" | "USD" | "GBP">("INR");
   const [region, setRegion] = useState<"India" | "Outside India">("India");
-  const [duration, setDuration] = useState<number>(15);
+  const [duration, setDuration] = useState<number>(10);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", age: "", gender: "", reason: "", notes: "",
@@ -68,7 +68,7 @@ function Book() {
   useEffect(() => {
     if (!date) return;
     const dateStr = format(date, "yyyy-MM-dd");
-    fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/settings/slots?date=${dateStr}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/settings/slots?date=${dateStr}`)
       .then(r => r.json())
       .then(data => {
         setAvailableTimeSlots(data || []);
@@ -105,7 +105,7 @@ function Book() {
 
   const opt = consultationOptions[type];
   const isVideoOrVoice = type === "video" || type === "voice";
-  const actualDuration = isVideoOrVoice ? duration : 15;
+  const actualDuration = isVideoOrVoice ? duration : 10;
   const isIndia = region === "India";
   
   // Calculate Internal INR Base Fee
@@ -114,7 +114,7 @@ function Book() {
     : (type === "video" ? 2000 : 1000);
     
   // Calculate Internal INR Extra Fee
-  const extraBlocks = Math.max(0, (actualDuration - 15) / 5);
+  const extraBlocks = Math.max(0, (actualDuration - 10) / 5);
   const extraFeePerBlock = isIndia ? 100 : 200;
   
   const inrFee = baseFee + (extraBlocks * extraFeePerBlock);
@@ -125,9 +125,9 @@ function Book() {
   
   const getCardPrice = (cardId: string) => {
     const isSelected = type === cardId;
-    const dur = isSelected ? actualDuration : 15; 
+    const dur = isSelected ? actualDuration : 10; 
     const cBase = isIndia ? (cardId === "video" ? 1000 : 500) : (cardId === "video" ? 2000 : 1000);
-    const cExtraBlocks = Math.max(0, (dur - 15) / 5);
+    const cExtraBlocks = Math.max(0, (dur - 10) / 5);
     const cExtraFeePerBlock = isIndia ? 100 : 200;
     const cInr = cBase + (cExtraBlocks * cExtraFeePerBlock);
     return currency === "USD" ? Math.round(cInr / 83) : currency === "GBP" ? Math.round(cInr / 105) : cInr;
@@ -141,7 +141,7 @@ function Book() {
   const confirm = async () => {
     try {
       const token = getToken();
-      const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments", {
+      const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -229,10 +229,10 @@ function Book() {
                         <div className="mt-4 flex items-center justify-between">
                           <div className="text-lg font-semibold">
                             {symbol}{getCardPrice(o.id)}
-                            {active && actualDuration > 15 ? (
+                            {active && actualDuration > 10 ? (
                               <span className="text-xs font-normal text-muted-foreground"> / {actualDuration}m</span>
                             ) : (
-                              <span className="text-xs font-normal text-muted-foreground"> / 15m</span>
+                              <span className="text-xs font-normal text-muted-foreground"> / 10m</span>
                             )}
                           </div>
                         </div>

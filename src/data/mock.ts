@@ -1,4 +1,4 @@
-import doctorImg from "@/assets/dr-loverpreet.jpg";
+import doctorImg from "@/assets/dr-lovepreet.png";
 
 export const doctor = {
   name: "Prof. Dr. Madhu Lata Rana",
@@ -60,7 +60,7 @@ export const consultationOptions: Record<ConsultationType, {
     description: "Scheduled private voice call. Great when you want to explain symptoms in detail.",
     fee: 500,
     feeUsd: 12,
-    duration: "15 mins",
+    duration: "10 mins",
     response: "Scheduled slot",
   },
   video: {
@@ -70,7 +70,7 @@ export const consultationOptions: Record<ConsultationType, {
     description: "Secure HD video appointment with visual examination and prescription.",
     fee: 1000,
     feeUsd: 24,
-    duration: "20 mins",
+    duration: "10 mins",
     response: "Scheduled slot",
   },
 };

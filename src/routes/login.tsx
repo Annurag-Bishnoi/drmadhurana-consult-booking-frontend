@@ -58,7 +58,7 @@ function LoginComponent() {
 
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
-    window.location.href = "https://drmadhurana-consult-booking-backend-production.up.railway.app/oauth2/authorization/google";
+    window.location.href = import.meta.env.VITE_API_BASE_URL + "/oauth2/authorization/google";
   };
 
   const handlePatientSubmit = async (e: React.FormEvent) => {

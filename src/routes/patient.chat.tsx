@@ -5,7 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Paperclip, Smile, Send, Circle, FileText } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Paperclip, Smile, Send, Circle, FileText, Menu } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "sonner";
@@ -38,7 +39,7 @@ function ChatPage() {
     let isMounted = true;
     const fetchAppointments = async () => {
       try {
-        const res = await fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
+        const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments/me", {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -64,7 +65,7 @@ function ChatPage() {
     
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${realId}`, {
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
         if (res.ok && isMounted) {
@@ -88,7 +89,7 @@ function ChatPage() {
     if (!text.trim() || !activeId) return;
     const realId = activeId.replace("CONS-", "");
     try {
-      const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${realId}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${getToken()}`,
@@ -123,7 +124,7 @@ function ChatPage() {
             ? (file.size / (1024 * 1024)).toFixed(1) + " MB" 
             : Math.round(file.size / 1024) + " KB";
             
-          const res = await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/documents`, {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/documents`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
             body: JSON.stringify({ name: file.name, size: sizeStr, data: base64Data })
@@ -131,7 +132,7 @@ function ChatPage() {
           if (res.ok) {
             toast.success("Document uploaded successfully");
             const realId = activeId.replace("CONS-", "");
-            await fetch(`https://drmadhurana-consult-booking-backend-production.up.railway.app/api/chat/${realId}`, {
+            await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${realId}`, {
               method: "POST",
               headers: {
                 "Authorization": `Bearer ${getToken()}`,
@@ -199,7 +200,50 @@ function ChatPage() {
           <section className="flex min-w-0 flex-col h-full overflow-hidden">
             <header className="flex shrink-0 items-center justify-between border-b border-border/60 px-4 py-3">
               <div className="flex items-center gap-3">
-                <Avatar className="h-9 w-9"><AvatarFallback>DR</AvatarFallback></Avatar>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="md:hidden -ml-2">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-[300px] p-0 flex flex-col">
+                    <SheetTitle className="sr-only">Chat List</SheetTitle>
+                    <div className="p-4 border-b border-border/60 shrink-0">
+                      <div className="flex bg-muted/50 rounded-lg p-1">
+                        <button onClick={() => setSidebarTab("active")} className={cn("flex-1 text-xs font-medium py-1.5 rounded-md transition-colors", sidebarTab === "active" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}>Active</button>
+                        <button onClick={() => setSidebarTab("past")} className={cn("flex-1 text-xs font-medium py-1.5 rounded-md transition-colors", sidebarTab === "past" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}>Past</button>
+                      </div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                      {appointments.filter(a => sidebarTab === "active" ? a.status !== "completed" : a.status === "completed").length === 0 && (
+                        <div className="p-4 text-sm text-muted-foreground text-center">No {sidebarTab} chats</div>
+                      )}
+                      {appointments.filter(a => sidebarTab === "active" ? a.status !== "completed" : a.status === "completed").map((a) => {
+                        const currentId = `CONS-${a.id}`;
+                        const isActive = currentId === activeId;
+                        return (
+                          <SheetTrigger asChild key={currentId}>
+                            <button onClick={() => {
+                              setActiveId(currentId);
+                              navigate({ to: "/patient/chat", search: { id: currentId } });
+                            }} className={`flex w-full items-start gap-3 border-l-2 px-4 py-3 text-left transition-colors ${isActive ? "border-primary bg-primary/5" : "border-transparent hover:bg-muted/50"}`}>
+                              <Avatar className="h-10 w-10"><AvatarFallback>DR</AvatarFallback></Avatar>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between">
+                                  <div className="truncate text-sm font-medium">{a.doctor || "Doctor"}</div>
+                                  <div className="text-[10px] text-muted-foreground">{a.date}</div>
+                                </div>
+                                <div className="truncate text-xs text-muted-foreground mt-0.5">Consultation {currentId}</div>
+                                <div className="mt-0.5 truncate text-[11px] text-muted-foreground opacity-80">{a.reason}</div>
+                              </div>
+                            </button>
+                          </SheetTrigger>
+                        );
+                      })}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+                <Avatar className="h-9 w-9 hidden sm:block"><AvatarFallback>DR</AvatarFallback></Avatar>
                 <div className="leading-tight">
                   <div className="text-sm font-semibold">{activeAppt.doctor || "Doctor"}</div>
                   <div className="flex items-center gap-1 text-xs text-emerald-600"><Circle className="h-2 w-2 fill-emerald-500" /> Online</div>

@@ -18,7 +18,7 @@ function Overview() {
   const [mine, setMine] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("https://drmadhurana-consult-booking-backend-production.up.railway.app/api/appointments/me", {
+    fetch(import.meta.env.VITE_API_BASE_URL + "/api/appointments/me", {
       headers: { "Authorization": `Bearer ${getToken()}` }
     })
       .then(res => res.json())
