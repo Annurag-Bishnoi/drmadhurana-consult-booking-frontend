@@ -272,9 +272,6 @@ function LoginComponent() {
                   <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span>Enter Dashboard</span><ArrowRight className="h-4 w-4" /></>}
                   </Button>
-                  <p className="text-center text-xs text-muted-foreground mt-2">
-                    Default: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin@drmadhurana.com</code> / <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">admin1234</code>
-                  </p>
                 </form>
               </CardContent>
             </Card>

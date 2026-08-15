@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { DoctorShell } from "@/components/site/DashboardShell";
 import { Card, CardContent } from "@/components/ui/card";
-import { earnings, patients, consultationTypeLabel } from "@/data/mock";
+import { consultationTypeLabel } from "@/data/mock";
 import { StatusBadge, TypeBadge } from "@/components/site/StatusBadge";
 import { CalendarDays, Users, IndianRupee, Activity, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,26 @@ function DoctorOverview() {
       .catch(() => {});
   }, [getToken]);
 
-  const today = appointments.filter((a) => a.date === new Date().toISOString().split('T')[0] || a.date === "2026-07-18"); // fallback to today or mock date if needed
+  const todayDate = new Date().toISOString().split('T')[0];
+  const today = appointments.filter((a) => a.date === todayDate || a.date === "2026-07-18"); // fallback
   const upcoming = appointments.filter((a) => a.status === "upcoming").length;
+  
+  // Calculate dynamic stats
+  const uniquePatients = new Set(appointments.map(a => a.patientId)).size;
+  const totalEarnings = appointments.reduce((sum, a) => sum + (a.fee || 0), 0);
+  
+  // Earnings by type
+  const earningsByType = appointments.reduce((acc, a) => {
+    const type = (a.type || "unknown").toLowerCase();
+    acc[type] = (acc[type] || 0) + (a.fee || 0);
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const chatEarnings = earningsByType["chat"] || 0;
+  const voiceEarnings = earningsByType["voice"] || 0;
+  const videoEarnings = earningsByType["video"] || 0;
+  const maxTypeEarning = Math.max(chatEarnings, voiceEarnings, videoEarnings, 1); // prevent division by zero
+
   return (
     <DoctorShell title="Overview">
       <div className="mb-6">
@@ -40,8 +58,8 @@ function DoctorOverview() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={Activity} label="Today's consultations" value={String(today.length)} trend="+2 vs yesterday" />
         <Stat icon={CalendarDays} label="Upcoming appointments" value={String(upcoming)} trend="Next 7 days" />
-        <Stat icon={Users} label="Total patients" value={patients.length.toLocaleString() + "48"} trend="+124 this month" />
-        <Stat icon={IndianRupee} label="Monthly earnings" value={"₹" + earnings.month.toLocaleString("en-IN")} trend="+12% MoM" />
+        <Stat icon={Users} label="Total patients" value={uniquePatients.toLocaleString()} trend="All time" />
+        <Stat icon={IndianRupee} label="Total earnings" value={"₹" + totalEarnings.toLocaleString("en-IN")} trend="All time" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
@@ -73,11 +91,11 @@ function DoctorOverview() {
         </CardContent></Card>
 
         <Card className="border-border/60"><CardContent className="p-6">
-          <h3 className="mb-4 text-base font-semibold">Earnings snapshot</h3>
+          <h3 className="mb-4 text-base font-semibold">Earnings by Consultation Type</h3>
           <div className="space-y-3">
-            <BarRow label="Today" value={earnings.today} max={earnings.month / 5} />
-            <BarRow label="This week" value={earnings.week} max={earnings.month} />
-            <BarRow label="This month" value={earnings.month} max={earnings.month} />
+            <BarRow label="Video" value={videoEarnings} max={maxTypeEarning} />
+            <BarRow label="Voice" value={voiceEarnings} max={maxTypeEarning} />
+            <BarRow label="Chat" value={chatEarnings} max={maxTypeEarning} />
           </div>
           <Button asChild variant="outline" className="mt-6 w-full"><Link to="/doctor/earnings">View earnings</Link></Button>
         </CardContent></Card>

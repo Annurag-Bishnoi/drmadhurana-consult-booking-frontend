@@ -5,7 +5,7 @@ import { doctor } from "@/data/mock";
 export function PublicFooter() {
   return (
     <footer className="mt-24 border-t border-border/60 bg-secondary/40">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-5">
         <div className="md:col-span-1">
           <div className="flex items-center gap-2">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
@@ -32,6 +32,13 @@ export function PublicFooter() {
             <li className="flex items-center gap-2 hover:text-foreground transition-colors"><Mail className="h-4 w-4" /> maadhurrana@gmail.com</li>
             <li className="flex items-center gap-2 hover:text-foreground transition-colors"><Phone className="h-4 w-4" /> +91 7351025135</li>
             <li className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Dehradun, Uttarakhand</li>
+          </ul>
+        </div>
+        <div>
+          <div className="mb-3 text-sm font-semibold">Legal</div>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/terms" className="hover:text-foreground">Terms of Service</Link></li>
+            <li><Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link></li>
           </ul>
         </div>
         <div>

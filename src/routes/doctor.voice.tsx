@@ -13,7 +13,7 @@ import { FileText, ArrowLeft } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/doctor/voice")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { id?: string, url?: string } => ({
     id: search.id as string | undefined,
     url: search.url as string | undefined,
   }),

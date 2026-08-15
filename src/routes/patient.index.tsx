@@ -61,7 +61,7 @@ function Overview() {
                   <StatusBadge status={upcoming.status} />
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Button asChild size="sm"><Link to={upcoming.type === "chat" ? "/patient/chat" : upcoming.type === "voice" ? "/patient/voice" : "/patient/video"}>Join consultation</Link></Button>
+                  <Button asChild size="sm"><Link to={upcoming.type === "chat" ? "/patient/chat" : upcoming.type === "voice" ? "/patient/voice" : "/patient/video"} search={{ id: upcoming.id }}>Join consultation</Link></Button>
                   <Button asChild size="sm" variant="outline"><Link to="/patient/consultations">View details</Link></Button>
                 </div>
               </div>
@@ -76,7 +76,7 @@ function Overview() {
             <h3 className="mb-4 text-base font-semibold">Quick actions</h3>
             <div className="grid gap-3">
               <Button asChild variant="outline" className="justify-start"><Link to="/book">Book new consultation</Link></Button>
-              <Button asChild variant="outline" className="justify-start"><Link to="/patient/chat">Message doctor</Link></Button>
+              <Button asChild variant="outline" className="justify-start"><Link to="/patient/chat" search={{ id: "general" }}>Message doctor</Link></Button>
               <Button asChild variant="outline" className="justify-start"><Link to="/patient/documents">Upload document</Link></Button>
             </div>
           </CardContent>

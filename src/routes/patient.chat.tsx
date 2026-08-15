@@ -13,9 +13,10 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/patient/chat")({
-  head: () => ({ meta: [{ title: "Chat" }, { name: "robots", content: "noindex" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  head: () => ({ meta: [{ title: "Chat Consultations" }, { name: "robots", content: "noindex" }] }),
+  validateSearch: (search: Record<string, unknown>): { id?: string, url?: string } => ({
     id: search.id as string | undefined,
+    url: search.url as string | undefined,
   }),
   component: ChatPage,
 });

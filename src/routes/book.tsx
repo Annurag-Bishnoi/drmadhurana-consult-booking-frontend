@@ -13,17 +13,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { MessageSquare, Phone, Video, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { MessageSquare, Phone, Video, ArrowRight, ArrowLeft, CheckCircle2, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
+
+// Helper to convert IST time string to user's local time string
+function formatIstToLocal(dateObj: Date | undefined, istTimeStr: string): string {
+  if (!dateObj || !istTimeStr) return istTimeStr;
+  try {
+    const dateStr = format(dateObj, "yyyy-MM-dd");
+    const [time, modifier] = istTimeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const hh = hours.toString().padStart(2, '0');
+    const mm = minutes.toString().padStart(2, '0');
+    // Construct ISO string with IST offset (+05:30)
+    const isoString = `${dateStr}T${hh}:${mm}:00+05:30`;
+    const d = new Date(isoString);
+    
+    return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  } catch (e) {
+    return istTimeStr;
+  }
+}
 
 type Search = { type?: ConsultationType };
 
 export const Route = createFileRoute("/book")({
   head: () => ({ meta: [{ title: "Book a Consultation — Prof. Dr. Madhu Lata Rana" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
-    type: (["chat", "voice", "video"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
+    type: (["chat", "voice", "video", "physical"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
   }),
   component: Book,
 });
@@ -110,8 +132,8 @@ function Book() {
   
   // Calculate Internal INR Base Fee
   const baseFee = isIndia
-    ? (type === "video" ? 1000 : 500)
-    : (type === "video" ? 2000 : 1000);
+    ? (type === "video" ? 1000 : type === "physical" ? 1500 : 500)
+    : (type === "video" ? 2000 : type === "physical" ? 3000 : 1000);
     
   // Calculate Internal INR Extra Fee
   const extraBlocks = Math.max(0, (actualDuration - 10) / 5);
@@ -126,14 +148,14 @@ function Book() {
   const getCardPrice = (cardId: string) => {
     const isSelected = type === cardId;
     const dur = isSelected ? actualDuration : 10; 
-    const cBase = isIndia ? (cardId === "video" ? 1000 : 500) : (cardId === "video" ? 2000 : 1000);
+    const cBase = isIndia ? (cardId === "video" ? 1000 : cardId === "physical" ? 1500 : 500) : (cardId === "video" ? 2000 : cardId === "physical" ? 3000 : 1000);
     const cExtraBlocks = Math.max(0, (dur - 10) / 5);
     const cExtraFeePerBlock = isIndia ? 100 : 200;
     const cInr = cBase + (cExtraBlocks * cExtraFeePerBlock);
     return currency === "USD" ? Math.round(cInr / 83) : currency === "GBP" ? Math.round(cInr / 105) : cInr;
   };
   
-  const icons = { chat: MessageSquare, voice: Phone, video: Video } as const;
+  const icons = { chat: MessageSquare, voice: Phone, video: Video, physical: MapPin } as const;
 
   const next = () => setStep((s) => Math.min(4, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
@@ -155,7 +177,8 @@ function Book() {
           fee: inrFee, // send backend internal fee (though it will recalculate)
           duration: actualDuration,
           currency: currency,
-          region: region
+          region: region,
+          clinicLocation: type === "physical" ? "Dehradun" : undefined
         })
       });
       if (!res.ok) throw new Error("Failed to book appointment");
@@ -205,7 +228,7 @@ function Book() {
                     <button onClick={() => handleCurrencyChange("GBP")} className={cn("text-xs px-2 py-1 rounded transition-colors", currency === "GBP" ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted text-muted-foreground")}>£</button>
                   </div>
                 </div>
-                <div className="mt-6 grid gap-4 md:grid-cols-3">
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {(Object.values(consultationOptions)).map((o) => {
                     const Icon = icons[o.id];
                     const active = type === o.id;
@@ -240,6 +263,15 @@ function Book() {
                     );
                   })}
                 </div>
+                {type === "physical" && (
+                  <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4 flex gap-3 text-sm">
+                    <MapPin className="h-5 w-5 text-primary shrink-0" />
+                    <p className="text-muted-foreground leading-relaxed">
+                      <strong>Location: Dehradun, Uttarakhand.</strong> <br/>
+                      To protect the doctor's privacy, the exact clinic address will be shared securely in your booking confirmation message.
+                    </p>
+                  </div>
+                )}
                 {isVideoOrVoice && (
                   <div className="mt-8 rounded-xl border border-border/60 bg-muted/20 p-5">
                     <h3 className="text-sm font-semibold mb-3">Select duration</h3>
@@ -278,6 +310,13 @@ function Book() {
                   <div>
                     <div className="text-sm font-medium">Available slots</div>
                     <div className="text-xs text-muted-foreground">{date ? format(date, "EEEE, d MMM yyyy") : "Pick a date"}</div>
+                    
+                    {region === "Outside India" && availableTimeSlots.length > 0 && (
+                      <div className="mt-2 text-xs font-medium text-emerald-600 bg-emerald-500/10 p-2 rounded border border-emerald-500/20">
+                        Slots are shown in your local timezone ({Intl.DateTimeFormat().resolvedOptions().timeZone}).
+                      </div>
+                    )}
+
                     <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {availableTimeSlots.map((t) => (
                         <button
@@ -288,7 +327,7 @@ function Book() {
                             time === t ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:border-primary/40",
                           )}
                         >
-                          {t}
+                          {region === "Outside India" ? formatIstToLocal(date, t) : t}
                         </button>
                       ))}
                       {availableTimeSlots.length === 0 && (
@@ -308,7 +347,12 @@ function Book() {
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                   <Field label="Full name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Rahul Sharma" /></Field>
                   <Field label="Email"><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" /></Field>
-                  <Field label="Phone"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+91 98xxx xxxxx" /></Field>
+                  <Field label="Phone">
+                    <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+91 98xxx xxxxx" />
+                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">
+                      This number will receive the appointment booking confirmation (and also the email).
+                    </p>
+                  </Field>
                   <Field label="Age"><Input value={form.age} onChange={(e) => setForm({ ...form, age: e.target.value })} placeholder="34" /></Field>
                   <Field label="Gender">
                     <Select value={form.gender} onValueChange={(v) => setForm({ ...form, gender: v })}>
@@ -338,7 +382,7 @@ function Book() {
                     <Row k="Doctor" v={doctor.name} />
                     <Row k="Consultation" v={consultationTypeLabel(type)} />
                     <Row k="Date" v={date ? format(date, "EEE, d MMM yyyy") : "—"} />
-                    <Row k="Time" v={time} />
+                    <Row k="Time" v={region === "Outside India" ? `${formatIstToLocal(date, time)} (Local) / ${time} (IST)` : time} />
                     <Row k="Duration" v={`${actualDuration} minutes`} />
                     <div className="border-t border-border/60 pt-3">
                       <Row k="Patient" v={form.name} />

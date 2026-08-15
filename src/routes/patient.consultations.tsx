@@ -21,7 +21,7 @@ function MyConsultations() {
   const navigate = useNavigate();
   const [mine, setMine] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPrescription, setSelectedPrescription] = useState<{id: string, text: string} | null>(null);
+  const [selectedPrescription, setSelectedPrescription] = useState<{id: string, text?: string} | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -44,7 +44,7 @@ function MyConsultations() {
             type: a.type,
             date: a.date,
             time: a.time,
-            status: a.status,
+            status: (a.status || "").toLowerCase().replace("_", "-"),
             reason: a.reason,
             fee: a.fee,
             meetingUrl: a.meetingUrl,
@@ -69,7 +69,7 @@ function MyConsultations() {
 
   const groups = {
     all: mine,
-    upcoming: mine.filter((a) => a.status === "upcoming" || a.status === "in_progress"),
+    upcoming: mine.filter((a) => a.status === "upcoming" || a.status === "in-progress"),
     completed: mine.filter((a) => a.status === "completed"),
     cancelled: mine.filter((a) => a.status === "cancelled"),
   };
@@ -113,17 +113,19 @@ function MyConsultations() {
                               <td className="px-4 py-3 text-muted-foreground">{a.reason}</td>
                               <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
                               <td className="px-4 py-3 text-right">
-                                {a.status === "in_progress" ? (
-                                  a.type === "chat" ? (
-                                    <Button size="sm" onClick={() => navigate({ to: `/patient/chat`, search: { id: a.id } })}>
-                                      Join Chat
-                                    </Button>
+                                  {a.status === "in-progress" ? (
+                                    a.type === "physical" ? (
+                                      <span className="text-xs text-muted-foreground font-medium">Please visit clinic</span>
+                                    ) : a.type === "chat" ? (
+                                      <Button size="sm" onClick={() => navigate({ to: `/patient/chat`, search: { id: a.id } as any })}>
+                                        Join Chat
+                                      </Button>
+                                    ) : (
+                                      <Button size="sm" onClick={() => navigate({ to: `/patient/${a.type}` as any, search: { id: a.id, url: a.meetingUrl } as any })}>
+                                        Join Call
+                                      </Button>
+                                    )
                                   ) : (
-                                    <Button size="sm" onClick={() => navigate({ to: `/patient/${a.type}` as any, search: { id: a.id, url: a.meetingUrl } })}>
-                                      Join Call
-                                    </Button>
-                                  )
-                                ) : (
                                   a.prescription ? (
                                     <Button size="sm" variant="outline" onClick={() => setSelectedPrescription({id: a.id, text: a.prescription})}>
                                       View Rx

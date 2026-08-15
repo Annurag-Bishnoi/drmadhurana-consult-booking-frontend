@@ -31,7 +31,7 @@ export const doctor = {
   ],
 };
 
-export type ConsultationType = "chat" | "voice" | "video";
+export type ConsultationType = "chat" | "voice" | "video" | "physical";
 
 export const consultationOptions: Record<ConsultationType, {
   id: ConsultationType;
@@ -66,12 +66,22 @@ export const consultationOptions: Record<ConsultationType, {
   video: {
     id: "video",
     title: "Video Consultation",
-    tagline: "Face-to-face online visit",
-    description: "Secure HD video appointment with visual examination and prescription.",
+    tagline: "Face-to-face virtual care",
+    description: "Comprehensive live video session for detailed examination and in-depth discussion.",
     fee: 1000,
-    feeUsd: 24,
-    duration: "10 mins",
-    response: "Scheduled slot",
+    feeUsd: 25,
+    duration: "15 min",
+    response: "Instant scheduling",
+  },
+  physical: {
+    id: "physical",
+    title: "In-Person Clinic",
+    tagline: "Visit the doctor physically",
+    description: "Book an in-person physical appointment at the clinic in Dehradun.",
+    fee: 500,
+    feeUsd: 12,
+    duration: "15 min",
+    response: "Scheduled visit",
   },
 };
 
@@ -91,6 +101,8 @@ export interface Appointment {
   status: AppointmentStatus;
   reason: string;
   fee: number;
+  meetingUrl?: string;
+  prescription?: string;
 }
 
 export const patients = [
@@ -210,4 +222,4 @@ export const patientProfile = {
 };
 
 export const consultationTypeLabel = (t: ConsultationType) =>
-  t === "chat" ? "Chat" : t === "voice" ? "Voice Call" : "Video Call";
+  t === "chat" ? "Chat" : t === "voice" ? "Voice Call" : t === "video" ? "Video Call" : "In-Person Clinic";

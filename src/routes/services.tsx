@@ -5,7 +5,7 @@ import { consultationOptions } from "@/data/mock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Phone, Video, CheckCircle2 } from "lucide-react";
+import { MessageSquare, Phone, Video, CheckCircle2, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -20,8 +20,8 @@ export const Route = createFileRoute("/services")({
 });
 
 function Services() {
-  const opts = [consultationOptions.chat, consultationOptions.voice, consultationOptions.video];
-  const icons = { chat: MessageSquare, voice: Phone, video: Video } as const;
+  const opts = [consultationOptions.chat, consultationOptions.voice, consultationOptions.video, consultationOptions.physical];
+  const icons = { chat: MessageSquare, voice: Phone, video: Video, physical: MapPin } as const;
   return (
     <div className="min-h-screen bg-background">
       <PublicHeader />

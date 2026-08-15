@@ -7,18 +7,19 @@ import { CheckCircle2 } from "lucide-react";
 import { doctor, consultationTypeLabel, type ConsultationType } from "@/data/mock";
 
 type Search = {
-  id?: string; type?: ConsultationType; date?: string; time?: string; name?: string; fee?: number;
+  id?: string; type?: ConsultationType; date?: string; time?: string; name?: string; fee?: number; currency?: string;
 };
 
 export const Route = createFileRoute("/booking-success")({
   head: () => ({ meta: [{ title: "Booking confirmed — Prof. Dr. Madhu Lata Rana" }, { name: "robots", content: "noindex" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     id: typeof s.id === "string" ? s.id : undefined,
-    type: (["chat","voice","video"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
+    type: (["chat","voice","video","physical"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
     date: typeof s.date === "string" ? s.date : undefined,
     time: typeof s.time === "string" ? s.time : undefined,
     name: typeof s.name === "string" ? s.name : undefined,
     fee: typeof s.fee === "number" ? s.fee : Number(s.fee) || undefined,
+    currency: typeof s.currency === "string" ? s.currency : undefined,
   }),
   component: Success,
 });

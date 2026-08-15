@@ -17,8 +17,9 @@ const routeApi = getRouteApi("/doctor/chat");
 
 export const Route = createFileRoute("/doctor/chat")({
   head: () => ({ meta: [{ title: "Chat Consultations" }, { name: "robots", content: "noindex" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { id?: string, url?: string } => ({
     id: search.id as string | undefined,
+    url: search.url as string | undefined,
   }),
   component: DoctorChat,
 });

@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 
 export const Route = createFileRoute("/patient/video")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { id?: string, url?: string } => ({
     id: search.id as string | undefined,
     url: search.url as string | undefined,
   }),

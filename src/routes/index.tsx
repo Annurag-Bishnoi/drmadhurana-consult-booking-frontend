@@ -8,7 +8,7 @@ import { doctor, consultationOptions } from "@/data/mock";
 import { allReviews } from "@/data/reviews";
 import {
   Star, Award, Users, ShieldCheck, MessageSquare, Phone, Video, ArrowRight, Clock, CheckCircle2,
-  Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus,
+  Stethoscope, Activity, HeartPulse, ShieldPlus, Syringe, MessageSquarePlus, MapPin,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -105,8 +105,8 @@ function Stats() {
 }
 
 function Services() {
-  const opts = [consultationOptions.chat, consultationOptions.voice, consultationOptions.video];
-  const icons = { chat: MessageSquare, voice: Phone, video: Video } as const;
+  const opts = [consultationOptions.chat, consultationOptions.voice, consultationOptions.video, consultationOptions.physical];
+  const icons = { chat: MessageSquare, voice: Phone, video: Video, physical: MapPin } as const;
   return (
     <section id="services" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">

@@ -89,7 +89,7 @@ function DoctorAppointments() {
       const data = await res.json();
       toast.success("Consultation started");
       const route = `/doctor/${type}` as any;
-      navigate({ to: route, search: { id, url: data.meetingUrl } });
+      navigate({ to: route, search: { id, url: data.meetingUrl } as any });
     } catch (error) {
       toast.error("Could not start consultation");
     }
@@ -129,7 +129,7 @@ function DoctorAppointments() {
                       </div>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" onClick={() => setSelectedConsultation(a)}>View</Button>
-                        {a.status !== "completed" && a.status !== "cancelled" && (
+                        {a.status !== "completed" && a.status !== "cancelled" && a.type !== "physical" && (
                           <Button size="sm" onClick={() => startConsultation(a.id, a.type)}>Start</Button>
                         )}
                       </div>
