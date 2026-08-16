@@ -24,6 +24,7 @@ import { Route as DoctorAppointmentsRouteImport } from './routes/doctor.appointm
 import { Route as DoctorChatRouteImport } from './routes/doctor.chat'
 import { Route as DoctorEarningsRouteImport } from './routes/doctor.earnings'
 import { Route as DoctorHistoryRouteImport } from './routes/doctor.history'
+import { Route as DoctorInpersonRouteImport } from './routes/doctor.inperson'
 import { Route as DoctorPatientsRouteImport } from './routes/doctor.patients'
 import { Route as DoctorProfileRouteImport } from './routes/doctor.profile'
 import { Route as DoctorSettingsRouteImport } from './routes/doctor.settings'
@@ -113,6 +114,11 @@ const DoctorHistoryRoute = DoctorHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => DoctorRoute,
 } as any)
+const DoctorInpersonRoute = DoctorInpersonRouteImport.update({
+  id: '/inperson',
+  path: '/inperson',
+  getParentRoute: () => DoctorRoute,
+} as any)
 const DoctorPatientsRoute = DoctorPatientsRouteImport.update({
   id: '/patients',
   path: '/patients',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/doctor/chat': typeof DoctorChatRoute
   '/doctor/earnings': typeof DoctorEarningsRoute
   '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/inperson': typeof DoctorInpersonRoute
   '/doctor/patients': typeof DoctorPatientsRoute
   '/doctor/profile': typeof DoctorProfileRoute
   '/doctor/settings': typeof DoctorSettingsRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/doctor/chat': typeof DoctorChatRoute
   '/doctor/earnings': typeof DoctorEarningsRoute
   '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/inperson': typeof DoctorInpersonRoute
   '/doctor/patients': typeof DoctorPatientsRoute
   '/doctor/profile': typeof DoctorProfileRoute
   '/doctor/settings': typeof DoctorSettingsRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/doctor/chat': typeof DoctorChatRoute
   '/doctor/earnings': typeof DoctorEarningsRoute
   '/doctor/history': typeof DoctorHistoryRoute
+  '/doctor/inperson': typeof DoctorInpersonRoute
   '/doctor/patients': typeof DoctorPatientsRoute
   '/doctor/profile': typeof DoctorProfileRoute
   '/doctor/settings': typeof DoctorSettingsRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/doctor/chat'
     | '/doctor/earnings'
     | '/doctor/history'
+    | '/doctor/inperson'
     | '/doctor/patients'
     | '/doctor/profile'
     | '/doctor/settings'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/doctor/chat'
     | '/doctor/earnings'
     | '/doctor/history'
+    | '/doctor/inperson'
     | '/doctor/patients'
     | '/doctor/profile'
     | '/doctor/settings'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/doctor/chat'
     | '/doctor/earnings'
     | '/doctor/history'
+    | '/doctor/inperson'
     | '/doctor/patients'
     | '/doctor/profile'
     | '/doctor/settings'
@@ -479,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorHistoryRouteImport
       parentRoute: typeof DoctorRoute
     }
+    '/doctor/inperson': {
+      id: '/doctor/inperson'
+      path: '/inperson'
+      fullPath: '/doctor/inperson'
+      preLoaderRoute: typeof DoctorInpersonRouteImport
+      parentRoute: typeof DoctorRoute
+    }
     '/doctor/patients': {
       id: '/doctor/patients'
       path: '/patients'
@@ -578,6 +597,7 @@ interface DoctorRouteChildren {
   DoctorChatRoute: typeof DoctorChatRoute
   DoctorEarningsRoute: typeof DoctorEarningsRoute
   DoctorHistoryRoute: typeof DoctorHistoryRoute
+  DoctorInpersonRoute: typeof DoctorInpersonRoute
   DoctorPatientsRoute: typeof DoctorPatientsRoute
   DoctorProfileRoute: typeof DoctorProfileRoute
   DoctorSettingsRoute: typeof DoctorSettingsRoute
@@ -591,6 +611,7 @@ const DoctorRouteChildren: DoctorRouteChildren = {
   DoctorChatRoute: DoctorChatRoute,
   DoctorEarningsRoute: DoctorEarningsRoute,
   DoctorHistoryRoute: DoctorHistoryRoute,
+  DoctorInpersonRoute: DoctorInpersonRoute,
   DoctorPatientsRoute: DoctorPatientsRoute,
   DoctorProfileRoute: DoctorProfileRoute,
   DoctorSettingsRoute: DoctorSettingsRoute,

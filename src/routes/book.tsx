@@ -11,14 +11,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Phone, Video, ArrowRight, ArrowLeft, CheckCircle2, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { CLINIC_LOCATIONS } from "./doctor.settings";
 
-// Helper to convert IST time string to user's local time string
 function formatIstToLocal(dateObj: Date | undefined, istTimeStr: string): string {
   if (!dateObj || !istTimeStr) return istTimeStr;
   try {
@@ -30,7 +29,6 @@ function formatIstToLocal(dateObj: Date | undefined, istTimeStr: string): string
 
     const hh = hours.toString().padStart(2, '0');
     const mm = minutes.toString().padStart(2, '0');
-    // Construct ISO string with IST offset (+05:30)
     const isoString = `${dateStr}T${hh}:${mm}:00+05:30`;
     const d = new Date(isoString);
     
@@ -43,7 +41,7 @@ function formatIstToLocal(dateObj: Date | undefined, istTimeStr: string): string
 type Search = { type?: ConsultationType };
 
 export const Route = createFileRoute("/book")({
-  head: () => ({ meta: [{ title: "Book a Consultation — Prof. Dr. Madhu Lata Rana" }] }),
+  head: () => ({ meta: [{ title: "Book a Consultation - Prof. Dr. Madhu Lata Rana" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     type: (["chat", "voice", "video", "physical"] as const).includes(s.type as ConsultationType) ? (s.type as ConsultationType) : undefined,
   }),
@@ -54,8 +52,10 @@ function Book() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { user, isLoading, getToken } = useAuth();
+  
   const [step, setStep] = useState(1);
   const [type, setType] = useState<ConsultationType>(search.type ?? "video");
+  const [location, setLocation] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState<string>("");
   const [currency, setCurrency] = useState<"INR" | "USD" | "GBP">("INR");
@@ -66,7 +66,13 @@ function Book() {
     name: "", email: "", phone: "", age: "", gender: "", reason: "", notes: "",
   });
 
-  // Auto-detect region via IP
+  const labels = type === "physical" 
+    ? ["Type", "Location", "Schedule", "Details", "Confirm"]
+    : ["Type", "Schedule", "Details", "Confirm"];
+  
+  const currentStepLabel = labels[step - 1] || "Confirm";
+  const maxSteps = labels.length;
+
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then(r => r.json())
@@ -90,7 +96,14 @@ function Book() {
   useEffect(() => {
     if (!date) return;
     const dateStr = format(date, "yyyy-MM-dd");
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/settings/slots?date=${dateStr}`)
+    let locParam = "";
+    if (type === "physical" && location) {
+      locParam = `&location=${encodeURIComponent(location)}`;
+    } else {
+      locParam = `&location=Online`;
+    }
+
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/settings/slots?date=${dateStr}${locParam}`)
       .then(r => r.json())
       .then(data => {
         setAvailableTimeSlots(data || []);
@@ -104,9 +117,8 @@ function Book() {
         setAvailableTimeSlots([]);
         setTime("");
       });
-  }, [date]);
+  }, [date, type, location]);
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!isLoading && !user) {
       toast.error("Please login before booking a consultation", { id: "login-required" });
@@ -114,7 +126,6 @@ function Book() {
     }
   }, [isLoading, user, navigate]);
 
-  // Pre-fill form from Google account details
   useEffect(() => {
     if (user) {
       setForm((prev) => ({
@@ -125,30 +136,24 @@ function Book() {
     }
   }, [user]);
 
-  const opt = consultationOptions[type];
   const isVideoOrVoice = type === "video" || type === "voice";
   const actualDuration = isVideoOrVoice ? duration : 10;
   const isIndia = region === "India";
   
-  // Calculate Internal INR Base Fee
   const baseFee = isIndia
-    ? (type === "video" ? 1000 : type === "physical" ? 1500 : 500)
-    : (type === "video" ? 2000 : type === "physical" ? 3000 : 1000);
+    ? (type === "video" ? 1000 : 500)
+    : (type === "video" ? 2000 : 1000);
     
-  // Calculate Internal INR Extra Fee
   const extraBlocks = Math.max(0, (actualDuration - 10) / 5);
   const extraFeePerBlock = isIndia ? 100 : 200;
-  
   const inrFee = baseFee + (extraBlocks * extraFeePerBlock);
-  
-  // Display Fee calculation
   const finalFee = currency === "USD" ? Math.round(inrFee / 83) : currency === "GBP" ? Math.round(inrFee / 105) : inrFee;
   const symbol = currency === "USD" ? "$" : currency === "GBP" ? "£" : "₹";
   
   const getCardPrice = (cardId: string) => {
     const isSelected = type === cardId;
     const dur = isSelected ? actualDuration : 10; 
-    const cBase = isIndia ? (cardId === "video" ? 1000 : cardId === "physical" ? 1500 : 500) : (cardId === "video" ? 2000 : cardId === "physical" ? 3000 : 1000);
+    const cBase = isIndia ? (cardId === "video" ? 1000 : 500) : (cardId === "video" ? 2000 : 1000);
     const cExtraBlocks = Math.max(0, (dur - 10) / 5);
     const cExtraFeePerBlock = isIndia ? 100 : 200;
     const cInr = cBase + (cExtraBlocks * cExtraFeePerBlock);
@@ -157,7 +162,7 @@ function Book() {
   
   const icons = { chat: MessageSquare, voice: Phone, video: Video, physical: MapPin } as const;
 
-  const next = () => setStep((s) => Math.min(4, s + 1));
+  const next = () => setStep((s) => Math.min(maxSteps, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   const confirm = async () => {
@@ -174,11 +179,11 @@ function Book() {
           date: date ? format(date, "yyyy-MM-dd") : "",
           time: time,
           reason: form.reason || "General Consultation",
-          fee: inrFee, // send backend internal fee (though it will recalculate)
+          fee: inrFee,
           duration: actualDuration,
           currency: currency,
           region: region,
-          clinicLocation: type === "physical" ? "Dehradun" : undefined
+          clinicLocation: type === "physical" ? location : undefined
         })
       });
       if (!res.ok) throw new Error("Failed to book appointment");
@@ -198,9 +203,10 @@ function Book() {
   };
 
   const canNext = () => {
-    if (step === 1) return !!type;
-    if (step === 2) return !!date && !!time;
-    if (step === 3) return form.name && form.email && form.phone && form.age && form.gender && form.reason;
+    if (currentStepLabel === "Type") return !!type;
+    if (currentStepLabel === "Location") return !!location;
+    if (currentStepLabel === "Schedule") return !!date && !!time;
+    if (currentStepLabel === "Details") return form.name && form.email && form.phone && form.age && form.gender && form.reason;
     return true;
   };
 
@@ -210,13 +216,13 @@ function Book() {
       <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold tracking-tight">Book a consultation</h1>
-          <p className="mt-1 text-muted-foreground">Four quick steps. Takes under a minute.</p>
+          <p className="mt-1 text-muted-foreground">Quick and easy booking steps.</p>
         </div>
-        <Stepper step={step} />
+        <Stepper step={step} labels={labels} />
 
         <Card className="mt-6 border-border/60">
           <CardContent className="p-6 sm:p-8">
-            {step === 1 && (
+            {currentStepLabel === "Type" && (
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                   <h2 className="text-lg font-semibold">Select consultation type</h2>
@@ -235,7 +241,10 @@ function Book() {
                     return (
                       <button
                         key={o.id}
-                        onClick={() => setType(o.id)}
+                        onClick={() => {
+                          setType(o.id);
+                          if (o.id !== "physical") setLocation(""); 
+                        }}
                         className={cn(
                           "rounded-2xl border p-5 text-left transition-all",
                           active ? "border-primary bg-primary/5 shadow-sm ring-2 ring-primary/20" : "border-border hover:border-primary/40 hover:bg-muted/40",
@@ -263,15 +272,6 @@ function Book() {
                     );
                   })}
                 </div>
-                {type === "physical" && (
-                  <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4 flex gap-3 text-sm">
-                    <MapPin className="h-5 w-5 text-primary shrink-0" />
-                    <p className="text-muted-foreground leading-relaxed">
-                      <strong>Location: Dehradun, Uttarakhand.</strong> <br/>
-                      To protect the doctor's privacy, the exact clinic address will be shared securely in your booking confirmation message.
-                    </p>
-                  </div>
-                )}
                 {isVideoOrVoice && (
                   <div className="mt-8 rounded-xl border border-border/60 bg-muted/20 p-5">
                     <h3 className="text-sm font-semibold mb-3">Select duration</h3>
@@ -294,11 +294,39 @@ function Book() {
               </div>
             )}
 
-            {step === 2 && (
+            {currentStepLabel === "Location" && (
+              <div>
+                <h2 className="text-lg font-semibold">Select Clinic Location</h2>
+                <p className="text-muted-foreground mt-1 text-sm">Choose the area nearest to you in Dehradun.</p>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {CLINIC_LOCATIONS.map(loc => {
+                    const active = location === loc;
+                    return (
+                      <button
+                        key={loc}
+                        onClick={() => setLocation(loc)}
+                        className={cn(
+                          "flex items-center justify-between rounded-xl border p-4 text-left transition-all",
+                          active ? "border-primary bg-primary/5 ring-1 ring-primary/20" : "hover:border-primary/40 hover:bg-muted/40"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <MapPin className={cn("h-5 w-5", active ? "text-primary" : "text-muted-foreground")} />
+                          <span className="font-medium">{loc}</span>
+                        </div>
+                        {active && <CheckCircle2 className="h-5 w-5 text-primary" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {currentStepLabel === "Schedule" && (
               <div>
                 <h2 className="text-lg font-semibold">Select date &amp; time</h2>
                 <div className="mt-6 grid gap-8 md:grid-cols-2">
-                  <div className="rounded-xl border border-border/60 bg-card p-2">
+                  <div className="rounded-xl border border-border/60 bg-muted/10 p-2 sm:p-4">
                     <Calendar
                       mode="single"
                       selected={date}
@@ -308,7 +336,7 @@ function Book() {
                     />
                   </div>
                   <div>
-                    <div className="text-sm font-medium">Available slots</div>
+                    <div className="text-sm font-medium">Available slots {location ? `at ${location}` : ""}</div>
                     <div className="text-xs text-muted-foreground">{date ? format(date, "EEEE, d MMM yyyy") : "Pick a date"}</div>
                     
                     {region === "Outside India" && availableTimeSlots.length > 0 && (
@@ -341,7 +369,7 @@ function Book() {
               </div>
             )}
 
-            {step === 3 && (
+            {currentStepLabel === "Details" && (
               <div>
                 <h2 className="text-lg font-semibold">Your details</h2>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -350,7 +378,7 @@ function Book() {
                   <Field label="Phone">
                     <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+91 98xxx xxxxx" />
                     <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">
-                      This number will receive the appointment booking confirmation (and also the email).
+                      This number will receive the appointment booking confirmation.
                     </p>
                   </Field>
                   <Field label="Age"><Input value={form.age} onChange={(e) => setForm({ ...form, age: e.target.value })} placeholder="34" /></Field>
@@ -374,26 +402,27 @@ function Book() {
               </div>
             )}
 
-            {step === 4 && (
+            {currentStepLabel === "Confirm" && (
               <div>
                 <h2 className="text-lg font-semibold">Confirm your booking</h2>
                 <div className="mt-6 grid gap-6 md:grid-cols-[1.4fr_1fr]">
                   <div className="space-y-3 rounded-xl border border-border/60 bg-secondary/40 p-5 text-sm">
                     <Row k="Doctor" v={doctor.name} />
                     <Row k="Consultation" v={consultationTypeLabel(type)} />
-                    <Row k="Date" v={date ? format(date, "EEE, d MMM yyyy") : "—"} />
+                    {type === "physical" && <Row k="Location" v={location} />}
+                    <Row k="Date" v={date ? format(date, "EEE, d MMM yyyy") : "?"} />
                     <Row k="Time" v={region === "Outside India" ? `${formatIstToLocal(date, time)} (Local) / ${time} (IST)` : time} />
                     <Row k="Duration" v={`${actualDuration} minutes`} />
                     <div className="border-t border-border/60 pt-3">
                       <Row k="Patient" v={form.name} />
-                      <Row k="Contact" v={`${form.phone} · ${form.email}`} />
+                      <Row k="Contact" v={`${form.phone} - ${form.email}`} />
                       <Row k="Reason" v={form.reason} />
                     </div>
                   </div>
                   <div className="rounded-xl border border-border/60 bg-card p-5">
                     <div className="text-sm text-muted-foreground">Total payable</div>
                     <div className="mt-1 text-3xl font-semibold">{symbol}{finalFee}</div>
-                    <div className="mt-4 text-xs text-muted-foreground">Payment will be collected on confirmation. This is a prototype — no charge will be made.</div>
+                    <div className="mt-4 text-xs text-muted-foreground">Payment will be collected on confirmation. This is a prototype - no charge will be made.</div>
                     <Button className="mt-5 w-full" size="lg" onClick={confirm}>Confirm consultation</Button>
                   </div>
                 </div>
@@ -402,7 +431,7 @@ function Book() {
 
             <div className="mt-8 flex items-center justify-between">
               <Button variant="outline" onClick={back} disabled={step === 1}><ArrowLeft className="mr-1 h-4 w-4" /> Back</Button>
-              {step < 4 ? (
+              {step < maxSteps ? (
                 <Button onClick={next} disabled={!canNext()}>Continue <ArrowRight className="ml-1 h-4 w-4" /></Button>
               ) : null}
             </div>
@@ -414,8 +443,7 @@ function Book() {
   );
 }
 
-function Stepper({ step }: { step: number }) {
-  const labels = ["Type", "Schedule", "Details", "Confirm"];
+function Stepper({ step, labels }: { step: number; labels: string[] }) {
   return (
     <ol className="flex flex-wrap items-center gap-2 text-sm">
       {labels.map((l, i) => {

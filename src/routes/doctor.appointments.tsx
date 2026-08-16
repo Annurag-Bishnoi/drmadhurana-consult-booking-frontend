@@ -72,6 +72,7 @@ function DoctorAppointments() {
   }, [getToken]);
 
   const filtered = appointments.filter((a) => {
+    if (a.type === "physical") return false;
     if (tab === "all") return true;
     if (["chat", "voice", "video"].includes(tab)) return a.type === (tab as any);
     return a.status === (tab as any);

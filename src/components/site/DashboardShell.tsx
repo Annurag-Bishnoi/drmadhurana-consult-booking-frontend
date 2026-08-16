@@ -248,7 +248,7 @@ export function DoctorShell({ title, children }: { title: string; children: Reac
 
 import {
   LayoutDashboard, CalendarDays, MessageSquare, Phone, Video, FileText, User, Settings,
-  Users, History, IndianRupee,
+  Users, History, IndianRupee, MapPin
 } from "lucide-react";
 
 export const patientNav: NavItem[] = [
@@ -264,6 +264,7 @@ export const patientNav: NavItem[] = [
 
 export const doctorNav: NavItem[] = [
   { label: "Overview", to: "/doctor", icon: LayoutDashboard },
+  { label: "In-Person Appointments", to: "/doctor/inperson", icon: MapPin },
   { label: "Appointments", to: "/doctor/appointments", icon: CalendarDays },
   { label: "Patients", to: "/doctor/patients", icon: Users },
   { label: "Chat Consultations", to: "/doctor/chat", icon: MessageSquare },

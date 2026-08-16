@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import type { AppointmentStatus, ConsultationType } from "@/data/mock";
-import { MessageSquare, Phone, Video } from "lucide-react";
+import { MessageSquare, Phone, Video, MapPin } from "lucide-react";
 
 export function StatusBadge({ status }: { status: AppointmentStatus }) {
   const map: Record<AppointmentStatus, string> = {
@@ -14,8 +14,8 @@ export function StatusBadge({ status }: { status: AppointmentStatus }) {
 }
 
 export function TypeBadge({ type }: { type: ConsultationType }) {
-  const Icon = type === "chat" ? MessageSquare : type === "voice" ? Phone : Video;
-  const label = type === "chat" ? "Chat" : type === "voice" ? "Voice" : "Video";
+  const Icon = type === "chat" ? MessageSquare : type === "voice" ? Phone : type === "physical" ? MapPin : Video;
+  const label = type === "chat" ? "Chat" : type === "voice" ? "Voice" : type === "physical" ? "In-Person" : "Video";
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-0.5 text-xs">
       <Icon className="h-3 w-3" />
