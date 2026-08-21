@@ -183,7 +183,8 @@ function Book() {
           duration: actualDuration,
           currency: currency,
           region: region,
-          clinicLocation: type === "physical" ? location : undefined
+          clinicLocation: type === "physical" ? location : undefined,
+          phoneNumber: form.phone
         })
       });
       if (!res.ok) throw new Error("Failed to book appointment");
@@ -206,7 +207,7 @@ function Book() {
     if (currentStepLabel === "Type") return !!type;
     if (currentStepLabel === "Location") return !!location;
     if (currentStepLabel === "Schedule") return !!date && !!time;
-    if (currentStepLabel === "Details") return form.name && form.email && form.phone && form.age && form.gender && form.reason;
+    if (currentStepLabel === "Details") return form.name && form.email && form.phone && form.phone.length === 10 && form.age && form.gender && form.reason;
     return true;
   };
 
@@ -376,7 +377,15 @@ function Book() {
                   <Field label="Full name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Rahul Sharma" /></Field>
                   <Field label="Email"><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" /></Field>
                   <Field label="Phone">
-                    <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+91 98xxx xxxxx" />
+                    <Input 
+                      value={form.phone} 
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 10) setForm({ ...form, phone: val });
+                      }} 
+                      placeholder="98xxxxxxxx" 
+                      maxLength={10}
+                    />
                     <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">
                       This number will receive the appointment booking confirmation.
                     </p>
